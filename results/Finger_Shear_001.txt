@@ -1,0 +1,11 @@
+[0.00s] 	vertical_actuator force:-74.71N
+[0.05s] 	vertical_actuator force:-92.45N
+[0.10s] 	vertical_actuator force:-37.80N
+[0.15s] 	vertical_actuator force:-68.78N
+[0.20s] 	vertical_actuator force:-82.95N
+[0.25s] 	vertical_actuator force:-102.16N
+[0.30s] 	vertical_actuator force:-106.60N
+[25.45s] 	vertical_actuator force:128.25N
+[51.05s] 	vertical_actuator force:256.25N
+[70.85s] 	vertical_actuator final force:355.25N
+Actuator Failed. Stopping Simulation...

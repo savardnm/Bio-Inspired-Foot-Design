@@ -1,0 +1,13 @@
+{
+	"gripper": "/home/nathan/Programs/CoppeliaSim/CoppeliaSim_Edu_V4_6_0_rev10_Ubuntu20_04/models/stickbug/FingerClaw.ttm",
+	"output_file": "/home/nathan/Documents/GitHub/Bio-Inspired-Foot-Design/results/Finger_Shear_000.txt",
+	"vertical_actuator":{
+		"wait_time": 1.0,
+		"force": {
+			"starting_value": 1.0,
+			"mode": "linear",
+			"rate": 5.0
+		},
+		"position_threshold": 0.1
+	}
+}

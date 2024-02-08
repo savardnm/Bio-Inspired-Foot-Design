@@ -1,0 +1,12 @@
+{
+	"gripper":".",
+	"horizontal_actuator": {
+		"wait_time":1.0,
+		"force":{
+			"starting_value": 1.0,
+			"mode":"linear",
+			"rate":5.0
+		},
+		"position_threshold":0.1
+	}
+}

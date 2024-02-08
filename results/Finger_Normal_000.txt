@@ -1,0 +1,10 @@
+[1.00s] 	horizontal_actuator force:6.00N
+[1.05s] 	horizontal_actuator force:6.25N
+[1.10s] 	horizontal_actuator force:6.50N
+[1.45s] 	horizontal_actuator force:8.25N
+[3.05s] 	horizontal_actuator force:16.25N
+[6.25s] 	horizontal_actuator force:32.25N
+[12.65s] 	horizontal_actuator force:64.25N
+[25.45s] 	horizontal_actuator force:128.25N
+[37.50s] 	horizontal_actuator final force:188.50N
+Actuator Failed. Stopping Simulation...
