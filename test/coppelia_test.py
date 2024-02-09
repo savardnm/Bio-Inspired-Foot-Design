@@ -38,7 +38,7 @@ def main():
 
     # trials = [trials[0]]
 
-    with Pool() as pool:
+    with Pool(1) as pool:
         pool.map(run_test, trials)
     # for trial in trials:
     #     run_test(trial)

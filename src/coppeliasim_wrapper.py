@@ -4,7 +4,7 @@ from multiprocessing import Process
 
 # ./coppeliaSim.sh -q -h -s500000 -gmodels/stickbug/FingerClaw.ttm -g10 -g0 scenes/stickbug/05_Pole_Test_detached.ttt
 path_to_compeliasim = "/home/nathan/Programs/CoppeliaSim/CoppeliaSim_Edu_V4_6_0_rev10_Ubuntu20_04/coppeliaSim.sh"
-
+path_to_python_coppeliasim = "/home/nathan/Documents/GitHub/Bio-Inspired-Foot-Design/src/coppelia.py"
 
 def encode_passed_data(data_dict):
     data_string = str(data_dict)
@@ -29,10 +29,15 @@ def launch():
     simulate(headless=False, autoquit=False)
     
 
-def simulate(scene=None, num_timesteps=5e5, autoquit=True, passed_data=None, headless=True):
+def simulate(scene=None, num_timesteps=5e5, autoquit=True, passed_data=None, headless=True, target="sh"):
     flags = []
     data = {}
-    command = path_to_compeliasim
+
+
+    if target == "sh":
+        command = [path_to_compeliasim]
+    if target == "py":
+        command = ["/usr/bin/python3", path_to_python_coppeliasim]
 
     if autoquit:
         flags.append("-q")
@@ -49,7 +54,7 @@ def simulate(scene=None, num_timesteps=5e5, autoquit=True, passed_data=None, hea
     if passed_data:
         flags.append(encode_passed_data(passed_data))
 
-    command_array = [command] + flags
+    command_array = command + flags
 
     print(">", *command_array)
     
