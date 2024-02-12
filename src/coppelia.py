@@ -50,11 +50,11 @@ def stop_sim(api, loop, *args, **kwargs):
 def close_sim(deinitialize, *args, **kwargs):
     deinitialize()
 
-def simThreadFunc(app_dir, scene, num_timesteps=5e3, lock=None):
+def simThreadFunc(app_dir, sim_args, scene, num_timesteps=5e3, lock=None):
     if lock != None:
         lock.acquire()
 
-    sim_args = setup_sim(app_dir)
+    # sim_args = setup_sim(app_dir)
     sim_api = sim_args['api']
 
     # example: load a scene, run the simulation for 1000 steps, then quit:
@@ -96,7 +96,30 @@ class Sim:
         self.options = get_gui_options(headless=headless, true_headless=true_headless)
 
         self.appDir = os.path.dirname(coppeliasim_library)
-        pass
+
+        self.sim_args = setup_sim()
+        
+
+    def setup_sim(self):
+        from coppeliasim.lib import simInitialize, simDeinitialize, simLoop
+        sim = {
+            "initialize": simInitialize,
+            "deinitialize": simDeinitialize,
+            "loop": simLoop
+        }
+
+        import coppeliasim.bridge
+        simInitialize(c_char_p(self.appDir.encode('utf-8')), 0)
+        coppeliasim.bridge.load()
+
+        # fetch CoppeliaSim API sim-namespace functions:
+        sim['api'] = coppeliasim.bridge.require('sim')
+
+        v = sim['api'].getInt32Param(sim['api'].intparam_program_full_version)
+        version = '.'.join(str(v // 100**(3-i) % 100) for i in range(4))
+        print('CoppeliaSim version is:', version)
+        return sim
+
 
     def simulate(self, **kwargs):
         if self.true_headless:
@@ -152,4 +175,4 @@ if __name__ == '__main__':
     pole_scene = '/home/nathan/Programs/CoppeliaSim/CoppeliaSim_Edu_V4_6_0_rev10_Ubuntu20_04/scenes/stickbug/05_Pole_Test.ttt'
     # simulate(scene=pole_scene, headless=True)
     sim = Sim(headless=False)
-    sim.simulate(scene=pole_scene)
+    sim.simulate(scene=pole_scene, sim_args=sim.sim_args)
