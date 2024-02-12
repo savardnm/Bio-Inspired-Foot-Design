@@ -12,8 +12,6 @@ from ctypes import *
 copp_lib_dir = "/home/nathan/Programs/CoppeliaSim/CoppeliaSim_Edu_V4_6_0_rev10_Ubuntu20_04/"
 sys.path.append(copp_lib_dir)
 
-
-
 def setup_sim(app_dir):
     from coppeliasim.lib import simInitialize, simDeinitialize, simLoop
     sim = {
@@ -52,7 +50,7 @@ def stop_sim(api, loop, *args, **kwargs):
 def close_sim(deinitialize, *args, **kwargs):
     deinitialize()
 
-def simThreadFunc(app_dir, scene, num_timesteps=10e3, lock=None):
+def simThreadFunc(app_dir, scene, num_timesteps=5e3, lock=None):
     if lock != None:
         lock.acquire()
 
@@ -72,6 +70,7 @@ def simThreadFunc(app_dir, scene, num_timesteps=10e3, lock=None):
         print(f'Simulation time: {t:.2f} [s] (simulation running synchronously to client, i.e. stepped)')
         step_sim(**sim_args)
     stop_sim(**sim_args)
+    close_sim(**sim_args)
 
 def get_gui_options(headless, true_headless):
     sim_gui_all = 0x0ffff
@@ -85,15 +84,29 @@ def get_gui_options(headless, true_headless):
     return options
 
 class Sim:
-    def __init__(self) -> None:
+    def __init__(self, headless, true_headless=False) -> None:
+        self.headless = headless
+        self.true_headless = true_headless
+
         coppeliasim_library = get_library(true_headless=False)
         from coppeliasim.lib import simRunGui
+        self.run_gui = simRunGui
 
         # TODO: Bug: Cannot use true headless >:(
-        options = get_gui_options(headless=headless, true_headless=true_headless)
+        self.options = get_gui_options(headless=headless, true_headless=true_headless)
 
-        appDir = os.path.dirname(coppeliasim_library)
+        self.appDir = os.path.dirname(coppeliasim_library)
         pass
+
+    def simulate(self, **kwargs):
+        if self.true_headless:
+            simThreadFunc(self.appDir, **kwargs)
+        else:
+            t = threading.Thread(target=simThreadFunc, args=(self.appDir,), kwargs=kwargs)
+            t.start()
+            self.run_gui(self.options)
+            t.join()
+
 
 def simulate(headless=False, true_headless=False, **kwargs):
     coppeliasim_library = get_library(true_headless=False)
@@ -137,4 +150,6 @@ def get_library(true_headless=False):
 
 if __name__ == '__main__':
     pole_scene = '/home/nathan/Programs/CoppeliaSim/CoppeliaSim_Edu_V4_6_0_rev10_Ubuntu20_04/scenes/stickbug/05_Pole_Test.ttt'
-    simulate(scene=pole_scene, headless=True)
+    # simulate(scene=pole_scene, headless=True)
+    sim = Sim(headless=False)
+    sim.simulate(scene=pole_scene)
