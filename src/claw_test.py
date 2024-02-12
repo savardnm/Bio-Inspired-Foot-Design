@@ -1,4 +1,4 @@
-from coppelia import simulate
+from coppelia import *
 from batch_test import process_batch
 
 
@@ -12,6 +12,26 @@ def batch_claw_test(scenario_list):
     for scenario in scenario_list:
         pass
         
+
+def sim_thread_func(app_dir, scene, num_timesteps=10e3, lock=None):
+    if lock != None:
+        lock.acquire()
+
+    sim = setup_sim(app_dir)
+
+    # example: load a scene, run the simulation for 1000 steps, then quit:
+    sim.loadScene(scene)
+
+    start_sim(sim)
+
+    if lock != None:
+        lock.release()
+
+    for i in range(int(num_timesteps)):
+        t = sim.getSimulationTime()
+        print(f'Simulation time: {t:.2f} [s] (simulation running synchronously to client, i.e. stepped)')
+        step_sim(sim)
+    stop_sim(sim)
 
 
 def main():
@@ -27,7 +47,6 @@ def main():
                      for actuator in actuator_list]
 
     batch_claw_test(scenario_list)
-
 
 if __name__ == '__main__':
     main()

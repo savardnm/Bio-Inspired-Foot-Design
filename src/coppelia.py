@@ -10,52 +10,68 @@ from pathlib import Path
 from ctypes import *
 
 copp_lib_dir = "/home/nathan/Programs/CoppeliaSim/CoppeliaSim_Edu_V4_6_0_rev10_Ubuntu20_04/"
+sys.path.append(copp_lib_dir)
 
-def simStart():
-    if sim.getSimulationState() == sim.simulation_stopped:
-        sim.startSimulation()
 
-def simStep(simLoop):
-    if sim.getSimulationState() != sim.simulation_stopped:
-        t = sim.getSimulationTime()
-        while t == sim.getSimulationTime():
-            simLoop(None, 0)
 
-def simStop(simLoop):
-    while sim.getSimulationState() != sim.simulation_stopped:
-        sim.stopSimulation()
-        simLoop(None, 0)
-
-def simThreadFunc(app_dir, scene, lock=None):
-    if lock != None:
-        lock.acquire()
-        
+def setup_sim(app_dir):
     from coppeliasim.lib import simInitialize, simDeinitialize, simLoop
+    sim = {
+        "initialize": simInitialize,
+        "deinitialize": simDeinitialize,
+        "loop": simLoop
+    }
+
     import coppeliasim.bridge
     simInitialize(c_char_p(app_dir.encode('utf-8')), 0)
     coppeliasim.bridge.load()
 
     # fetch CoppeliaSim API sim-namespace functions:
-    global sim
-    sim = coppeliasim.bridge.require('sim')
+    sim['api'] = coppeliasim.bridge.require('sim')
 
-    v = sim.getInt32Param(sim.intparam_program_full_version)
+    v = sim['api'].getInt32Param(sim['api'].intparam_program_full_version)
     version = '.'.join(str(v // 100**(3-i) % 100) for i in range(4))
     print('CoppeliaSim version is:', version)
+    return sim
+
+def start_sim(api, *args, **kwargs):
+    if api.getSimulationState() == api.simulation_stopped:
+        api.startSimulation()
+
+def step_sim(api, loop, *args, **kwargs):
+    if api.getSimulationState() != api.simulation_stopped:
+        t = api.getSimulationTime()
+        while t == api.getSimulationTime():
+            loop(None, 0)
+
+def stop_sim(api, loop, *args, **kwargs):
+    while api.getSimulationState() != api.simulation_stopped:
+        api.stopSimulation()
+        loop(None, 0)
+
+def close_sim(deinitialize, *args, **kwargs):
+    deinitialize()
+
+def simThreadFunc(app_dir, scene, num_timesteps=10e3, lock=None):
+    if lock != None:
+        lock.acquire()
+
+    sim_args = setup_sim(app_dir)
+    sim_api = sim_args['api']
 
     # example: load a scene, run the simulation for 1000 steps, then quit:
-    sim.loadScene(scene)
-    simStart()
+    sim_api.loadScene(scene)
+
+    start_sim(**sim_args)
 
     if lock != None:
         lock.release()
 
-    for i in range(10000):
-        t = sim.getSimulationTime()
+    for i in range(int(num_timesteps)):
+        t = sim_api.getSimulationTime()
         print(f'Simulation time: {t:.2f} [s] (simulation running synchronously to client, i.e. stepped)')
-        simStep(simLoop)
-    simStop(simLoop)
-    simDeinitialize()
+        step_sim(**sim_args)
+    stop_sim(**sim_args)
 
 def get_gui_options(headless, true_headless):
     sim_gui_all = 0x0ffff
@@ -68,10 +84,20 @@ def get_gui_options(headless, true_headless):
     
     return options
 
+class Sim:
+    def __init__(self) -> None:
+        coppeliasim_library = get_library(true_headless=False)
+        from coppeliasim.lib import simRunGui
+
+        # TODO: Bug: Cannot use true headless >:(
+        options = get_gui_options(headless=headless, true_headless=true_headless)
+
+        appDir = os.path.dirname(coppeliasim_library)
+        pass
+
 def simulate(headless=False, true_headless=False, **kwargs):
     coppeliasim_library = get_library(true_headless=False)
     
-    sys.path.append(copp_lib_dir)
     from coppeliasim.lib import simRunGui
 
     # TODO: Bug: Cannot use true headless >:(
