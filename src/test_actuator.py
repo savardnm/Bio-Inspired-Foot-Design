@@ -1,57 +1,54 @@
 from force_functions import *
 import sys
-import logger
+from logger import log
+
 
 class TestActuator:
-    def __init__(self, sim, name, passed_data, handle) -> None:
-        self.sim = sim
+    def __init__(self, sim_api, name, force, log_file=None, wait_time=0.0, position_threshold=0.0, *args, **kwargs) -> None:
+        self.sim_api = sim_api
+        print("searching for " + name + "in scene")
         self.name = name
-        self.handle=handle
+        self.handle=sim_api.getObject(":/" + name)
+        
+        self.milestone = max(force['starting_value'], 0.1)
+        self.force_function, self.force_parameters = extract_force_data(**force)
 
-        self.log_file = passed_data["output_file"]
+        self.wait_time = wait_time
 
-        self.active = name in passed_data
-        if self.active:
-            self.passed_data = passed_data[name]
+        self.position_threshold = position_threshold
+        self.log_file = log_file
 
-        self.milestone = 1.0
+        self.active = True
             
 
     def actuation_loop(self):
-        if not self.active:
-            return # only actuate if active
+        simulation_time = self.sim_api.getSimulationTime()
 
-        simulation_time = self.sim.getSimulationTime()
 
-        force_function, force_parameters = extract_force_data(**self.passed_data['force'])
-
-        force_value = force_function(simulation_time, **force_parameters)
-
-        if "wait_time" in self.passed_data:
-            if simulation_time < self.passed_data["wait_time"]:
-                force_value = 0.0 # wait for 1 sec for setup and grasping
-        
-        self.sim.setJointForce(self.handle, force_value)
+        force_value = self.force_function(simulation_time - self.wait_time, **self.force_parameters)
+        if simulation_time < self.wait_time:
+            force_value = 0.0 # wait before grasping
+            print("\nwaiting", "<======================================= \n")
+        else:
+            self.sim_api.setJointForce(self.handle, force_value)
 
     def sensor_loop(self):
-        if not self.active:
-            return # only sense if active
-        
-        self.check_position_threshold(**self.passed_data)
+        self.check_position_threshold()
 
 
-    
-    def check_position_threshold(self, position_threshold, *args, **kwargs):
-        actuator_position = self.sim.getJointPosition(self.handle)
-        actuator_force = self.sim.getJointForce(self.handle)
-        simulation_time = self.sim.getSimulationTime()
+    def check_position_threshold(self):
+        if self.active == False:
+            return 
+        actuator_position = self.sim_api.getJointPosition(self.handle)
+        actuator_force = self.sim_api.getJointForce(self.handle)
+        simulation_time = self.sim_api.getSimulationTime()
 
-        if abs(actuator_force) > self.milestone:
-            logger.log(self.log_file, "[%0.2fs]"%simulation_time, "\t" + self.name + " force:%0.2fN"%actuator_force)
+        if actuator_force != None and abs(actuator_force) > self.milestone:
+            print("[%0.2fs]"%simulation_time, "\t" + self.name + " force:%0.2fN"%actuator_force)
             self.milestone = self.milestone * 2
 
-        if actuator_position < position_threshold:
-            logger.log(self.log_file, "[%0.2fs]"%simulation_time, "\t" + self.name + " final force:%0.2fN"%actuator_force)
-            logger.log(self.log_file, "Actuator Failed. Stopping Simulation...")
-            self.sim.stopSimulation()
+        if actuator_position != None and actuator_position < self.position_threshold:
             self.active = False
+            log("[%0.2fs]"%simulation_time, "\t" + self.name + " final force:%0.2fN"%actuator_force, file=self.log_file)
+            print("Gripper Failed. Stopping Simulation...")
+            self.sim_api.stopSimulation()
