@@ -70,19 +70,30 @@ def create_file_name(*files):
     return file_name
 
 
-
+# TODO: Make Louse Gripper Pad from an array of springs & small blocks to simulate compliant materials
+# TODO: Increase size of pad overall (made from many small plates)
+# TODO: Check if coppeliasim can check/output friction/contact points
+# TODO: Start working on presentations
+# TIMELINE:
+# February: Add compliant pad and investigate contact area (correlation b/t grip area and force)
+            # Investigate rigid/flexible wrist in test scene
+# First Week March --> meeting
+# March: Complete in simulation --> optimizing and identifying positive quanifications
+# April: Validate in real world test --> show comparrison: gap b/t simulation and real-world
+# Result: does real-worl results follow the trend observied in simulation
+# use GA AI to optimize effects
 def main():
-    claw_list = all_claws
-    # claw_list = [Finger_Rigid, Finger_Flex]
+    # claw_list = all_claws
+    claw_list = [Louse_Flex]
     scene_list = [pole_scene_5cm]
     actuator_list = ['VerticalForce', 'HorizontalForce']
     # actuator_list = ['VerticalForce']
     # actuator_list = ['HorizontalForce']
     force = {
-                'starting_value': 0.0,
+                'starting_value': 50.0,
                 'mode':'hybrid',
-                'lin_rate':1.0,
-                'exp_rate':1.001,
+                'lin_rate':5.0,
+                'exp_rate':1.0001,
             }
 
     scenario_list = [{'scene':scene, 
@@ -90,11 +101,11 @@ def main():
                       'actuator':{
                           'name': actuator,
                           'force':force,
-                          'wait_time':1.0,
+                          'wait_time':0.0,
                           'position_threshold':0.1,
                           },
                       'log_file': create_file_name(scene, claw, actuator),
-                      'headless': True,
+                      'headless': False,
                       'autoquit': True,
                      } 
                      for scene in scene_list 
