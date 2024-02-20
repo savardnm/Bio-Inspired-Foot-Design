@@ -1,0 +1,4 @@
+[1.55s] 	VerticalForce final force:0.50N
+[1.55s] 	VerticalForce final force:0.50N
+[1.55s] 	VerticalForce final force:0.50N
+[1.55s] 	VerticalForce final force:0.50N

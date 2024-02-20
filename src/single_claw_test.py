@@ -16,4 +16,4 @@ def claw_test():
         },
     }
 
-    run_scenario(lock=None, **scenario)
+    run_scenario(startup_lock=None, **scenario)

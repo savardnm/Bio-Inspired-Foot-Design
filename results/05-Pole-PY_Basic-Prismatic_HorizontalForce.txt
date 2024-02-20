@@ -1,0 +1,6 @@
+[102.20s] 	HorizontalForce final force:101.15N
+[102.20s] 	HorizontalForce final force:101.15N
+[102.20s] 	HorizontalForce final force:101.15N
+[102.20s] 	HorizontalForce final force:101.15N
+[102.20s] 	HorizontalForce final force:101.15N
+[102.20s] 	HorizontalForce final force:101.15N

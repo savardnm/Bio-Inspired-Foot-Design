@@ -28,7 +28,6 @@ class TestActuator:
         force_value = self.force_function(simulation_time - self.wait_time, **self.force_parameters)
         if simulation_time < self.wait_time:
             force_value = 0.0 # wait before grasping
-            print("\nwaiting", "<======================================= \n")
         else:
             self.sim_api.setJointForce(self.handle, force_value)
 
