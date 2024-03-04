@@ -1,5 +1,5 @@
 -- lua
-local default_gripper_model_path = "/home/nathan/Programs/CoppeliaSim/CoppeliaSim_Edu_V4_6_0_rev10_Ubuntu20_04/models/stickbug/FingerClaw.ttm"
+local default_gripper_model_path = "/home/nathan/Programs/CoppeliaSim/CoppeliaSim_Edu_V4_6_0_rev18_Ubuntu20_04/models/stickbug/FingerClaw.ttm"
 local gripper_model
 local objectHandle
 

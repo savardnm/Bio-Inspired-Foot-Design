@@ -6,11 +6,12 @@ import os
 import sys
 import threading
 from time import sleep
+import asyncio
 
 from pathlib import Path
 from ctypes import *
 
-copp_lib_dir = "/home/nathan/Programs/CoppeliaSim/CoppeliaSim_Edu_V4_6_0_rev10_Ubuntu20_04/"
+copp_lib_dir = "/home/nathan/Programs/CoppeliaSim/CoppeliaSim_Edu_V4_6_0_rev18_Ubuntu20_04/"
 sys.path.append(copp_lib_dir)
 
 def get_gui_options(headless, true_headless):
@@ -42,14 +43,18 @@ class Sim:
         self.lock = threading.Lock()
 
         if self.true_headless:
-            self.sim_thread_func()
+            # self.sim_thread_func()
+            pass
         else:
             # self.sim_setup_thread = threading.Thread(target=self.setup_sim)
             self.gui_thread = threading.Thread(target=self.run_gui, args=(self.options,))
             self.gui_thread.start()
             self.setup_sim()
+            # asyncio.run(self.run_sim())
+            print("continuing despite the pain <===============")
             # self.sim_setup_thread.join()
     
+
     def start(self):
         if self.is_stopped():
             self.api.startSimulation()
@@ -76,13 +81,19 @@ class Sim:
         self.gui_thread.join()
 
 
+    async def run_sim(self):
+        run_basic(self.sim)
+
+
     def setup_sim(self):
-        from coppeliasim.lib import simInitialize, simDeinitialize, simLoop, simGetExitRequest
+        from coppeliasim.lib import simInitialize, simDeinitialize, simLoop, simGetExitRequest, simCallScriptFunctionEx, simCreateStack
 
         self.initialize = simInitialize
         self.deinitialize = simDeinitialize
         self.loop = simLoop
         self.get_exit_request = simGetExitRequest
+        self.call_function = simCallScriptFunctionEx
+        self.create_stack = simCreateStack
 
         import coppeliasim.bridge
         simInitialize(c_char_p(self.app_dir.encode('utf-8')), 0)
@@ -90,6 +101,9 @@ class Sim:
 
         # fetch CoppeliaSim API sim-namespace functions:
         self.api = coppeliasim.bridge.require('sim')
+        # from coppeliasim_zmqremoteapi_client import RemoteAPIClient
+        # client = RemoteAPIClient()
+        # self.api = client.require('sim')
 
         v = self.api.getInt32Param(self.api.intparam_program_full_version)
         version = '.'.join(str(v // 100**(3-i) % 100) for i in range(4))
@@ -124,6 +138,7 @@ class Sim:
 
 def run_basic(sim):
     # example: simply run CoppeliaSim:
+    print("running basic sim <===============")
     while not sim.get_exit_request():
         sim.loop(None, 0)
     sim.deinitialize()
@@ -162,7 +177,7 @@ def get_library(true_headless=False):
     return coppeliasim_library
 
 if __name__ == '__main__':
-    pole_scene = '/home/nathan/Programs/CoppeliaSim/CoppeliaSim_Edu_V4_6_0_rev10_Ubuntu20_04/scenes/stickbug/05_Pole_Test.ttt'
+    pole_scene = '/home/nathan/Programs/CoppeliaSim/CoppeliaSim_Edu_V4_6_0_rev18_Ubuntu20_04/scenes/stickbug/05_Pole_Test.ttt'
     # simulate(scene=pole_scene, headless=True)
     sim = Sim(headless=False)
     run_scene(sim, pole_scene)

@@ -10,6 +10,7 @@ def analyze(results_dir):
     # average_trials(results_df)
     compare_grippers(results_df)
     compare_weights(results_df)
+    compare_scenes(results_df)
 
     plt.show()
 
@@ -23,28 +24,67 @@ def compare_grippers(df):
     compare_horizontal(df)
 
 
-def boxplot_results(df, title, gripper_list = "all", **criteria):
+def boxplot_results(df, title, x_axis="gripper", x_axis_list = "all", **criteria):
     filtered_df = filter_df(df, **criteria)
     
-    if gripper_list == "all":
-        gripper_list = filtered_df['gripper'].unique()
+    if x_axis == "gripper":
+        if x_axis_list == "all":
+            x_axis_list = filtered_df['gripper'].unique()
 
-    labels = []
-    data = []
-    for gripper in gripper_list:
-        gripper_df = filter_df(filtered_df, gripper=gripper)
-        results = gripper_df["result"]
-        labels.append(gripper)
-        data.append(results)
+        labels = []
+        data = []
+        for gripper in x_axis_list:
+            gripper_df = filter_df(filtered_df, gripper=gripper)
+            results = gripper_df["result"]
+            labels.append(gripper)
+            data.append(results)
+
+    if x_axis == "scene":
+        if x_axis_list == "all":
+            x_axis_list = filtered_df['scene'].unique()
+
+        labels = []
+        data = []
+        for scene in x_axis_list:
+            scene_df = filter_df(filtered_df, scene=scene)
+            results = scene_df["result"]
+            labels.append(scene)
+            data.append(results)
+
 
     fig = plt.figure(figsize=(9, 7))
-    ax = fig.add_axes([0.1, 0.15, 0.8, 0.8], label="gripper")
+    ax = fig.add_axes([0.1, 0.15, 0.8, 0.75], label="gripper")
     plt.title(title)
 
     labels = ["\n".join(label.split("-")) for label in labels]
     ax.set_xticklabels(labels, rotation="vertical")
     # plt.xticks([], labels, rotation='vertical')
-    bp = ax.boxplot(data)
+    bp = ax.boxplot(data, showfliers=False)
+
+def compare_scenes(df):
+    compare_horizontal_scenes(df)
+    compare_vertical_scenes(df)
+
+def compare_horizontal_scenes(df):
+    boxplot_results(
+        df,
+        title="Effect of Pitch Flex on Horizontal Grip Strength",
+        x_axis="scene",
+        gripper=["Finger-Flex", "Louse-Pad", ],
+        applied_force=["HorizontalForce"],
+    )
+
+
+def compare_vertical_scenes(df):
+    boxplot_results(
+        df,
+        title="Effect of Pitch Flex on Vertical Grip Strength",
+        x_axis="scene",
+        gripper=["Finger-Flex", "Louse-Pad", ],
+        applied_force=["VerticalForce"],
+    )
+
+
 
 
 
@@ -76,7 +116,7 @@ def compare_vertical(df):
     boxplot_results(
         df,
         title="Gripper Vertical Performance",
-        gripper_list = [
+        x_axis_list = [
             "Basic-Prismatic",
             "Basic-Revolute",
             "Finger-Rigid",
@@ -95,7 +135,7 @@ def compare_horizontal(df):
         df,
         title="Gripper Horizontal Performance",
         applied_force="HorizontalForce",
-        gripper_list = [
+        x_axis_list = [
             "Basic-Prismatic",
             "Basic-Revolute",
             "Finger-Rigid",

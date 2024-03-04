@@ -1,75 +1,81 @@
-from multiprocessing import Process, Lock, Pool
-from time import time
+import multiprocessing
+import threading
+from time import time, sleep
 import random
 import asyncio
+import os
+import sys
+from pprint import pprint
 
-from coppeliasim_utils import call_script_function
+from coppeliasim_utils import *
+from coppeliasim_wrapper import run_coppeliasim
 
 from test_actuator import TestActuator
 
-from coppelia import *
 from claws import *
 from scenes import *
 
-import os
 
 coppelia_path = (
     "/home/nathan/Programs/CoppeliaSim/CoppeliaSim_Edu_V4_6_0_rev18_Ubuntu20_04/"
 )
 
+startup_lock = multiprocessing.Lock()
 
 def init_process(lock):
     global startup_lock
     startup_lock = lock
 
-
 def batch_claw_test(scenario_list, max_processes=100):
-    startup_lock = Lock()
+    global startup_lock
 
-    # for scenario in scenario_list:
-    #     scenario["startup_lock"] = startup_lock
+    for scenario in scenario_list:
+        scenario["port"] = find_free_port()
 
     initializer_args = (startup_lock,)
 
-    with Pool(max_processes, initializer=init_process, initargs=initializer_args) as p:
-        p.map(run_scenario_dict, scenario_list)
+    # with Pool(max_processes, initializer=init_process, initargs=initializer_args) as p:
+    #     p.map(run_scenario_dict, scenario_list)
 
-    # batch = [
-    #     Process(target=run_scenario, args=(startup_lock,), kwargs=scenario)
-    #     for scenario in scenario_list
-    # ]
+    for scenario in scenario_list:
+        run_scenario_dict(scenario)
 
-    # [process.start() for process in batch]
-
-    # [process.join() for process in batch]
-
+def mprint(*args):
+    print(*args)
+    sys.stdout.flush()
 
 def run_scenario_dict(scenario_dict):
     run_scenario(**scenario_dict)
 
 
+
 def run_scenario(
     # startup_lock,
-    scene,
     claw_scenario,
     actuator,
     log_file,
-    headless=False,
+    port=23000,
     autoquit=False,
     *args,
-    **kwargs,
+    **coppelia_kwargs,
 ):
     if startup_lock != None:
         startup_lock.acquire()
 
-    sim = Sim(headless=headless)
+    coppelia_kwargs['port'] = port
+    coppelia_thread = threading.Thread(target=run_coppeliasim, kwargs=coppelia_kwargs)
+    coppelia_thread.start()
 
-    sim.api.loadScene(scene)
-    sim.api.setInt32Parameter(sim.api.intparam_dynamic_engine, sim.api.physics_newton)
+    print("connecting to port ", port)
+    sim = connect_to_api(port) # will block until loaded
+    print("connected to port ", port)
 
-    attachment_point = sim.api.getObject(":/AttachmentPoint")  # find attachment point
+    sim.setInt32Parameter(sim.intparam_dynamic_engine, sim.physics_newton)
+
+    attachment_point = sim.getObject(":/AttachmentPoint")  # find attachment point
 
     print("attaching gripper ====================")
+
 
     gripper = attach_gripper(
         sim,
@@ -78,22 +84,19 @@ def run_scenario(
         offset=[0, 0.05, 0],
     )
 
-
     print("================== attached gripper")
 
-    actuator = TestActuator(sim_api=sim.api, log_file=log_file, **actuator)
+    actuator = TestActuator(sim_api=sim, log_file=log_file, **actuator)
 
-    if startup_lock != None:
-        startup_lock.release()
+    sim.setStepping(True)
 
-    start = time()
-    while time() < start + 1:
-        sim.spin()
+    sim.startSimulation()
 
-    sim.start()
+    modify_gripper(sim, gripper, **claw_scenario)
 
-    while not sim.get_exit_request() and not sim.is_stopped():
-        t = sim.api.getSimulationTime()
+
+    while not is_stopped(sim):
+        t = sim.getSimulationTime()
         print(
             f"Simulation time: {t:.2f} [s] (simulation running synchronously to client, i.e. stepped)"
         )
@@ -101,11 +104,6 @@ def run_scenario(
         actuator.sensor_loop()
         sim.step()
 
-    sim.stop()
-
-    # if not qutoquit, just run gui until user closes it
-    while not autoquit and (not sim.get_exit_request()):
-        sim.spin()
 
     print("Deinitializing =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=")
     sim.deinitialize()
@@ -115,24 +113,18 @@ def attach_gripper(sim, claw_scenario, attachment_point, offset):
     print("Creating gripper ============")
     gripper = create_gripper(sim, **claw_scenario)
     print("================= Created gripper")
-    sim.api.setObjectPosition(gripper, offset, attachment_point)
-    sim.api.setObjectParent(gripper, attachment_point, True)
+    sim.setObjectPosition(gripper, offset, attachment_point)
+    sim.setObjectParent(gripper, attachment_point, True)
     return gripper
 
 
 def create_gripper(sim, path, *args, **kwargs):
-    print("attempting to spawn object: ", path)
-    object_handle = sim.api.loadModel(path)
-    print("spawned object: ", object_handle)
-
-    modify_gripper(sim, object_handle, *args, **kwargs)
-
-    print("gripper modified object")
+    object_handle = sim.loadModel(path)
 
     return object_handle
 
 def modify_gripper(sim, object_handle, *args, **kwargs):
-    script_handle = sim.api.getScript(sim.api.scripttype_childscript, object_handle)
+    script_handle = sim.getScript(sim.scripttype_childscript, object_handle)
     print("fetched script handle: ", script_handle)
 
     asyncio.run(handle_louse_options(
@@ -149,7 +141,7 @@ def modify_gripper(sim, object_handle, *args, **kwargs):
 
 
 async def async_call_script_function(sim, function_name, script_handle, *params):
-    await sim.api.callScriptFunction("set_pad_size", script_handle, *params)
+    await sim.callScriptFunction("set_pad_size", script_handle, *params)
     print("sim script done")
 
 
@@ -162,20 +154,20 @@ async def handle_louse_options(
     *args,
     **kwargs,
 ):
-    # print(sim.api.setStepping(False))
+    # print(sim.setStepping(False))
     if num_pad_units is not None:
         print("setting pad size to: ", num_pad_units)
         call_script_function(sim, "set_pad_size", script_handle, num_pad_units)
-        # sim.api.executeScriptString("set_pad_size(num_pad_units)", script_handle)
+        # sim.executeScriptString("set_pad_size(num_pad_units)", script_handle)
         # async_call_script_function(sim, "set_pad_size", script_handle, num_pad_units)
         print("set pad size to: ", num_pad_units)
 
     if pad_strength is not None:
-        # sim.api.callScriptFunction("set_pad_strength", script_handle, *pad_strength)
+        # sim.callScriptFunction("set_pad_strength", script_handle, *pad_strength)
         print("set pad strength to: ", pad_strength)
 
     if claw_torque is not None:
-        # sim.api.callScriptFunction("set_claw_torques", script_handle, claw_torque)
+        # sim.callScriptFunction("set_claw_torques", script_handle, claw_torque)
         print("set torque to: ", claw_torque)
 
 
@@ -184,10 +176,10 @@ def handle_finger_options(
     sim, script_handle, claw_torque=None, flex_strength=None, *args, **kwargs
 ):
     if claw_torque is not None:
-        sim.api.callScriptFunction("set_claw_torques", script_handle, claw_torque)
+        sim.callScriptFunction("set_claw_torques", script_handle, claw_torque)
 
     if flex_strength is not None:
-        sim.api.callScriptFunction("set_flex_values", script_handle, *flex_strength)
+        sim.callScriptFunction("set_flex_values", script_handle, *flex_strength)
 
 
 def create_metadata_string(item):
@@ -199,12 +191,19 @@ def create_metadata_string(item):
 
     if type(item) is dict:
         return "-".join(
-            [simplify_key(key) + "=" + str(item[key]) + ":" for key in item]
+            [simplify_key(key) + "=" + simplify_item(str(item[key])) + ":" for key in item]
         )
 
 
 def simplify_key(key):
     return str(key).replace("_", "")
+
+
+def simplify_item(item):
+    if os.path.exists(item):
+        return extract_file_name(item)
+    else:
+        return item
 
 
 def extract_file_name(file_path):
@@ -332,9 +331,11 @@ if __name__ == "__main__":
         for claw_scenario in claw_scenario_list
         for actuator in actuator_list
     ] * reps
+
     random.shuffle(scenario_list)
 
-    print("first scenario:",  scenario_list[0])
+    print("first scenario:")
+    pprint(scenario_list[0])
 
     batch_claw_test(scenario_list=scenario_list, max_processes=1)
 

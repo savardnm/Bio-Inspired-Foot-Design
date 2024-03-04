@@ -6,7 +6,7 @@ from multiprocessing import Pool
 from copy import deepcopy
 import os
 
-coppelia_path="/home/nathan/Programs/CoppeliaSim/CoppeliaSim_Edu_V4_6_0_rev10_Ubuntu20_04/"
+coppelia_path="/home/nathan/Programs/CoppeliaSim/CoppeliaSim_Edu_V4_6_0_rev18_Ubuntu20_04/"
 results_path="/home/nathan/Documents/GitHub/Bio-Inspired-Foot-Design/results"
 
 scene_dir = coppelia_path + "scenes/stickbug/"

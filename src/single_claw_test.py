@@ -3,7 +3,7 @@ from claw_test import *
 def claw_test():
     scenario = {
         'headless': True,
-        'scene': pole_scene_5cm,
+        'scene': flex_pole_scene_5cm,
         'claw': Finger_Flex,
         'actuator': {
             'name': 'VerticalForce',
