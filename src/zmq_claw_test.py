@@ -20,33 +20,28 @@ coppelia_path = (
     "/home/nathan/Programs/CoppeliaSim/CoppeliaSim_Edu_V4_6_0_rev18_Ubuntu20_04/"
 )
 
-startup_lock = multiprocessing.Lock()
 
 def init_process(lock):
     global startup_lock
     startup_lock = lock
 
-def batch_claw_test(scenario_list, max_processes=100):
+
+def batch_claw_test(scenario_list, max_processes=6):
     global startup_lock
-
-    for scenario in scenario_list:
-        scenario["port"] = find_free_port()
-
+    startup_lock = multiprocessing.Lock()
     initializer_args = (startup_lock,)
 
-    # with Pool(max_processes, initializer=init_process, initargs=initializer_args) as p:
-    #     p.map(run_scenario_dict, scenario_list)
+    with multiprocessing.Pool(
+        max_processes, initializer=init_process, initargs=initializer_args
+    ) as p:
+        p.map(run_scenario_dict, scenario_list)
 
-    for scenario in scenario_list:
-        run_scenario_dict(scenario)
+    # for scenario in scenario_list:
+    #     run_scenario_dict(scenario)
 
-def mprint(*args):
-    print(*args)
-    sys.stdout.flush()
 
 def run_scenario_dict(scenario_dict):
     run_scenario(**scenario_dict)
-
 
 
 def run_scenario(
@@ -54,28 +49,29 @@ def run_scenario(
     claw_scenario,
     actuator,
     log_file,
-    port=23000,
-    autoquit=False,
+    startup_lock=None,
     *args,
     **coppelia_kwargs,
 ):
-    if startup_lock != None:
-        startup_lock.acquire()
+    if startup_lock is not None:
+        startup_lock.aquire()
 
-    coppelia_kwargs['port'] = port
+    port = find_free_port()
+    coppelia_kwargs["port"] = port
+    coppelia_kwargs["num_timesteps"] = 10e5
     coppelia_thread = threading.Thread(target=run_coppeliasim, kwargs=coppelia_kwargs)
     coppelia_thread.start()
 
     print("connecting to port ", port)
-    sim = connect_to_api(port) # will block until loaded
+    sim = connect_to_api(port)  # will block until loaded
     print("connected to port ", port)
 
     sim.setInt32Parameter(sim.intparam_dynamic_engine, sim.physics_newton)
+    
 
     attachment_point = sim.getObject(":/AttachmentPoint")  # find attachment point
 
     print("attaching gripper ====================")
-
 
     gripper = attach_gripper(
         sim,
@@ -90,10 +86,12 @@ def run_scenario(
 
     sim.setStepping(True)
 
+    if startup_lock is not None:
+        startup_lock.release()
+
     sim.startSimulation()
 
     modify_gripper(sim, gripper, **claw_scenario)
-
 
     while not is_stopped(sim):
         t = sim.getSimulationTime()
@@ -103,10 +101,6 @@ def run_scenario(
         actuator.actuation_loop()
         actuator.sensor_loop()
         sim.step()
-
-
-    print("Deinitializing =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=")
-    sim.deinitialize()
 
 
 def attach_gripper(sim, claw_scenario, attachment_point, offset):
@@ -123,13 +117,20 @@ def create_gripper(sim, path, *args, **kwargs):
 
     return object_handle
 
+
 def modify_gripper(sim, object_handle, *args, **kwargs):
     script_handle = sim.getScript(sim.scripttype_childscript, object_handle)
     print("fetched script handle: ", script_handle)
 
-    asyncio.run(handle_louse_options(
-        sim, object_handle=object_handle, script_handle=script_handle, *args, **kwargs
-    ))
+    asyncio.run(
+        handle_louse_options(
+            sim,
+            object_handle=object_handle,
+            script_handle=script_handle,
+            *args,
+            **kwargs,
+        )
+    )
 
     print("louse options handled")
 
@@ -171,7 +172,6 @@ async def handle_louse_options(
         print("set torque to: ", claw_torque)
 
 
-
 def handle_finger_options(
     sim, script_handle, claw_torque=None, flex_strength=None, *args, **kwargs
 ):
@@ -185,18 +185,24 @@ def handle_finger_options(
 def create_metadata_string(item):
     if type(item) is str:
         if os.path.exists(item):
-            return extract_file_name(item)
+            return "scene=" + extract_file_name(item)
         else:
-            return item
+            return "applied_force=" + item
 
     if type(item) is dict:
-        return "-".join(
-            [simplify_key(key) + "=" + simplify_item(str(item[key])) + ":" for key in item]
+        return ":".join(
+            [key + "=" + str(simplify_dict_item(item[key])) for key in item]
         )
 
 
-def simplify_key(key):
-    return str(key).replace("_", "")
+def simplify_dict_item(value):
+    if type(value) is tuple:
+        return value[0]
+    elif type(value) is str:
+        if os.path.exists(value):
+            return extract_file_name(value)
+
+    return value
 
 
 def simplify_item(item):
@@ -214,7 +220,8 @@ def extract_file_name(file_path):
 def create_file_name(*metadata_fields):
     metadata = [create_metadata_string(item) for item in metadata_fields]
 
-    file_name = "_".join(metadata) + ".txt"
+    file_name = ":".join(metadata) + ".txt"
+
     return file_name
 
 
@@ -270,6 +277,7 @@ def create_louse_scenario_list():
 
     return scenario_list
 
+
 def create_finger_scenario_list():
     flex_strength_list = [
         (5, 0.1),
@@ -299,17 +307,17 @@ if __name__ == "__main__":
     # claw_scenario_list = create_basic_claw_scenario_list(claw_list)
     claw_scenario_list = create_louse_scenario_list() + create_finger_scenario_list()
 
-    scene_list = all_scenes
+    # scene_list = all_scenes
     scene_list = [flex_pole_scene_5cm]
     actuator_list = ["VerticalForce", "HorizontalForce"]
     # actuator_list = ['VerticalForce']
     # actuator_list = ['HorizontalForce']
-    reps = 1
+    reps = 2
 
     force = {
         "starting_value": 0.0,
         "mode": "hybrid",
-        "lin_rate": 1.0,
+        "lin_rate": 100.0,
         "exp_rate": 1.05,
     }
 
@@ -337,5 +345,4 @@ if __name__ == "__main__":
     print("first scenario:")
     pprint(scenario_list[0])
 
-    batch_claw_test(scenario_list=scenario_list, max_processes=1)
-
+    batch_claw_test(scenario_list=scenario_list, max_processes=4)

@@ -70,7 +70,7 @@ def compare_horizontal_scenes(df):
         df,
         title="Effect of Pitch Flex on Horizontal Grip Strength",
         x_axis="scene",
-        gripper=["Finger-Flex", "Louse-Pad", ],
+        gripper=["Finger-Flex-Script", "Louse-Pad-Script", ],
         applied_force=["HorizontalForce"],
     )
 
@@ -80,7 +80,7 @@ def compare_vertical_scenes(df):
         df,
         title="Effect of Pitch Flex on Vertical Grip Strength",
         x_axis="scene",
-        gripper=["Finger-Flex", "Louse-Pad", ],
+        gripper=["Finger-Flex-Script", "Louse-Pad-Script", ],
         applied_force=["VerticalForce"],
     )
 
@@ -97,7 +97,7 @@ def compare_finger_weights(df):
     boxplot_results(
         df,
         title="Effect of Compliance on Finger Actuator",
-        gripper=["Finger-Rigid", "Finger-Flex-Weak", "Finger-Flex", "Finger-Flex-Strong", ],
+        gripper=["Finger-Rigid", "Finger-Flex-Weak", "Finger-Flex-Script", "Finger-Flex-Strong", ],
         applied_force=["VerticalForce"],
         scene=["05-Pole-PY"],
     )
@@ -107,7 +107,7 @@ def compare_louse_weights(df):
     boxplot_results(
         df,
         title="Effect of Compliance on Louse Actuator",
-        gripper=["Louse-Rigid", "Louse-Pad-Weak", "Louse-Pad", "Louse-Pad-Strong", ],
+        gripper=["Louse-Flex-Script", "Louse-Pad-Weak", "Louse-Pad", "Louse-Pad-Strong", ],
         applied_force=["VerticalForce"],
         scene=["05-Pole-PY"],
     )
@@ -120,8 +120,8 @@ def compare_vertical(df):
             "Basic-Prismatic",
             "Basic-Revolute",
             "Finger-Rigid",
-            "Finger-Flex",
-            "Louse-Rigid",
+            "Finger-Flex-Script",
+            "Louse-Flex-Script",
             "Louse-Flex",
             "Louse-Pad",
         ],
@@ -139,8 +139,8 @@ def compare_horizontal(df):
             "Basic-Prismatic",
             "Basic-Revolute",
             "Finger-Rigid",
-            "Finger-Flex",
-            "Louse-Rigid",
+            "Finger-Flex-Script",
+            "Louse-Flex-Script",
             "Louse-Flex",
             "Louse-Pad",
         ],

@@ -1,0 +1,2 @@
+[6.95s] 	VerticalForce final force:590.00N
+[7.85s] 	VerticalForce final force:680.00N
