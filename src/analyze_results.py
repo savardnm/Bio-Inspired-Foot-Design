@@ -13,7 +13,7 @@ def analyze(results_dir):
     # compare_weights(results_df)
     # compare_scenes(results_df)
     compare_finger_flex_effect(results_df)
-    finger_flex_2(results_df)
+    compare_louse_flex_effect(results_df)
 
     plt.show()
 
@@ -26,7 +26,23 @@ def compare_grippers(df):
     compare_vertical(df)
     compare_horizontal(df)
 
-def finger_flex_2(df):
+def compare_louse_flex_effect(df):
+    constant_filter = {
+        "gripper": "Louse-Pad-Script",
+        "scene": "05-Pole-PY",
+        "num_pad_units": "5"
+    }
+
+    variable_filter_list = [
+        ("applied_force", "all"),
+        ("pad_strength", "all"),
+    ]
+
+    multi_boxplot(df, constant_filter, variable_filter_list, title="Effect of Flex Values on Finger Gripper")
+
+
+
+def compare_finger_flex_effect(df):
     constant_filter = {
         "gripper": "Finger-Flex-Script",
         "scene": "05-Pole-PY",
@@ -40,7 +56,6 @@ def finger_flex_2(df):
     multi_boxplot(df, constant_filter, variable_filter_list, title="Effect of Flex Values on Finger Gripper")
 
 
-    
 
 def multi_boxplot(df, constant_filter, variable_filter_list, title):
     constant_filter_df = filter_df(df, **constant_filter)
@@ -90,75 +105,6 @@ def variable_filter_df(df, data_list, label_list, variable_filter_list, label=""
         filtered_df = filter_df(df, **option_filter)
 
         variable_filter_df(filtered_df, data_list, label_list, variable_filter_list, new_label)
-
-
-
-
-def compare_finger_flex_effect(df):
-
-    constant_filter = {
-        "gripper": "Finger-Flex-Script",
-        "scene": "05-Pole-PY",
-    }
-
-    finger_df = filter_df(df, **constant_filter)
-
-
-    force_option_list = finger_df["applied_force"].unique()
-    force_option_list.sort()
-
-    label_list = []
-    data_list = []
-
-    for force_option in force_option_list:
-        label = ""
-
-        force_filter = {"applied_force": force_option}
-
-        label += str(force_option)
-
-        force_filtered_df = filter_df(finger_df, **force_filter)
-
-        flex_option_list = sorted(force_filtered_df["flex_strength"].unique(), key=lambda val: int(val))
-
-        # flex_option_list = [int(item) for item in flex_option_list]
-
-        # flex_option_list.sort()
-        # flex_option_list = [str(item) for item in flex_option_list]
-
-        for flex_option in flex_option_list:
-            flex_filter = {"flex_strength": flex_option}
-
-            flex_filtered_df = filter_df(force_filtered_df, **flex_filter)
-
-            label2 = label
-            label2 += "\n"
-            label2 += str(flex_option)
-
-            data_list.append(flex_filtered_df['result'])
-            label_list.append(label2)
-
-    boxplot(
-        title="Effects of Flex Param on Finger Gripper",
-        labels=label_list,
-        data=data_list,
-    )
-
-
-
-
-
-def multi_boxplot_results(df, data_set_list, title):
-    label_list = []
-    data = []
-
-    for label, filter_set in data_set_list:
-        label_list.append(label)
-        filtered_df = filter_df(**filter_set)
-        filtered_results = filtered_df["result"]
-        data.append(filtered_results)
-
-    boxplot(title=title, labels=label_list, data=data)
 
 
 def boxplot_results(df, title, x_axis="gripper", x_axis_list="all", **criteria):
