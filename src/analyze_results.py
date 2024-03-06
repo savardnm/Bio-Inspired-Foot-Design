@@ -1,6 +1,7 @@
 import numpy as np
 import matplotlib.pyplot as plt
 from parse_results import *
+from copy import deepcopy
 
 
 def analyze(results_dir):
@@ -12,6 +13,7 @@ def analyze(results_dir):
     # compare_weights(results_df)
     # compare_scenes(results_df)
     compare_finger_flex_effect(results_df)
+    finger_flex_2(results_df)
 
     plt.show()
 
@@ -24,6 +26,73 @@ def compare_grippers(df):
     compare_vertical(df)
     compare_horizontal(df)
 
+def finger_flex_2(df):
+    constant_filter = {
+        "gripper": "Finger-Flex-Script",
+        "scene": "05-Pole-PY",
+    }
+
+    variable_filter_list = [
+        ("applied_force", "all"),
+        ("flex_strength", "all"),
+    ]
+
+    multi_boxplot(df, constant_filter, variable_filter_list, title="Effect of Flex Values on Finger Gripper")
+
+
+    
+
+def multi_boxplot(df, constant_filter, variable_filter_list, title):
+    constant_filter_df = filter_df(df, **constant_filter)
+
+    label_list = []
+    data_list = []
+
+    variable_filter_df(constant_filter_df, data_list, label_list, variable_filter_list)
+
+
+    boxplot(
+        title=title,
+        labels=label_list,
+        data=data_list,
+    )
+
+
+def variable_filter_df(df, data_list, label_list, variable_filter_list, label=""):
+    print("variable filtering...")
+
+    if not variable_filter_list:
+        data_list.append(df['result'])
+        label_list.append(label)
+        return
+    
+    variable_filter_list = deepcopy(variable_filter_list)
+    column, option_list = variable_filter_list.pop(0)
+
+    print(column, option_list)
+
+    if option_list == "all":
+        option_list = df[column].unique()
+
+    print(column, option_list)
+    try:
+        option_list = sorted(option_list, key=lambda opt: int(opt))
+        print("sorted")
+    except:
+        pass
+
+    print(column, option_list)
+    for option in option_list:
+        new_label = label + "\n" + str(option)
+
+        option_filter = {column: option}
+
+        filtered_df = filter_df(df, **option_filter)
+
+        variable_filter_df(filtered_df, data_list, label_list, variable_filter_list, new_label)
+
+
+
 
 def compare_finger_flex_effect(df):
 
@@ -34,12 +103,9 @@ def compare_finger_flex_effect(df):
 
     finger_df = filter_df(df, **constant_filter)
 
-    variable_filter_list = [
-        {"applied_force": finger_df["applied_force"].unique()},
-        {"flex_strength": finger_df["flex_strength"].unique()},
-    ]
 
     force_option_list = finger_df["applied_force"].unique()
+    force_option_list.sort()
 
     label_list = []
     data_list = []
@@ -53,24 +119,33 @@ def compare_finger_flex_effect(df):
 
         force_filtered_df = filter_df(finger_df, **force_filter)
 
-        flex_option_list = force_filtered_df["flex_strength"].unique()
+        flex_option_list = sorted(force_filtered_df["flex_strength"].unique(), key=lambda val: int(val))
+
+        # flex_option_list = [int(item) for item in flex_option_list]
+
+        # flex_option_list.sort()
+        # flex_option_list = [str(item) for item in flex_option_list]
 
         for flex_option in flex_option_list:
             flex_filter = {"flex_strength": flex_option}
 
             flex_filtered_df = filter_df(force_filtered_df, **flex_filter)
 
-            label += "\n"
-            label += str(flex_option)
+            label2 = label
+            label2 += "\n"
+            label2 += str(flex_option)
 
             data_list.append(flex_filtered_df['result'])
-            label_list.append(label)
+            label_list.append(label2)
 
     boxplot(
         title="Effects of Flex Param on Finger Gripper",
         labels=label_list,
         data=data_list,
     )
+
+
+
 
 
 def multi_boxplot_results(df, data_set_list, title):
@@ -241,10 +316,10 @@ def average_trials(df):
 
     data = [
         format_df_from_values(
-            scene,
-            gripper,
-            applied_force,
             average_over_values(df, scene, gripper, applied_force),
+            scene=scene,
+            gripper=gripper,
+            applied_force=applied_force,
         )
         for scene in scene_list
         for gripper in gripper_list

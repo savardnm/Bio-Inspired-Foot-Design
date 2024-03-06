@@ -284,6 +284,7 @@ def create_finger_scenario_list():
         (135, 0.1),
         (270, 0.1),
         (405, 0.1),
+        (810, 0.1),
     ]
 
     scenario_list = [
@@ -313,10 +314,10 @@ if __name__ == "__main__":
     reps = 2
 
     force = {
-        "starting_value": 0.0,
+        "starting_value": 1.0,
         "mode": "hybrid",
         "lin_rate": 100.0,
-        "exp_rate": 1.05,
+        "exp_rate": 1.025,
     }
 
     scenario_list = [
