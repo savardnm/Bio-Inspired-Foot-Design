@@ -27,7 +27,6 @@ def init_process(lock):
 
 
 def batch_claw_test(scenario_list, max_processes=6):
-    global startup_lock
     startup_lock = multiprocessing.Lock()
     initializer_args = (startup_lock,)
 
@@ -45,16 +44,13 @@ def run_scenario_dict(scenario_dict):
 
 
 def run_scenario(
-    # startup_lock,
     claw_scenario,
     actuator,
     log_file,
-    startup_lock=None,
     *args,
     **coppelia_kwargs,
 ):
-    if startup_lock is not None:
-        startup_lock.aquire()
+    startup_lock.acquire()
 
     port = find_free_port()
     coppelia_kwargs["port"] = port
@@ -62,12 +58,13 @@ def run_scenario(
     coppelia_thread = threading.Thread(target=run_coppeliasim, kwargs=coppelia_kwargs)
     coppelia_thread.start()
 
-    print("connecting to port ", port)
+    print("connecting to port ", port, flush=True)
     sim = connect_to_api(port)  # will block until loaded
-    print("connected to port ", port)
+    print("connected to port ", port, flush=True)
 
     sim.setInt32Parameter(sim.intparam_dynamic_engine, sim.physics_newton)
     
+    startup_lock.release()
 
     attachment_point = sim.getObject(":/AttachmentPoint")  # find attachment point
 
@@ -86,8 +83,8 @@ def run_scenario(
 
     sim.setStepping(True)
 
-    if startup_lock is not None:
-        startup_lock.release()
+    sleep(10)
+
 
     sim.startSimulation()
 
@@ -95,9 +92,9 @@ def run_scenario(
 
     while not is_stopped(sim):
         t = sim.getSimulationTime()
-        print(
-            f"Simulation time: {t:.2f} [s] (simulation running synchronously to client, i.e. stepped)"
-        )
+        # print(
+        #     f"Simulation time: {t:.2f} [s] (simulation running synchronously to client, i.e. stepped)"
+        # )
         actuator.actuation_loop()
         actuator.sensor_loop()
         sim.step()
@@ -306,9 +303,10 @@ if __name__ == "__main__":
     # claw_list = bio_claws
     # claw_scenario_list = create_basic_claw_scenario_list(claw_list)
     claw_scenario_list = create_louse_scenario_list() + create_finger_scenario_list()
+    # claw_scenario_list = create_finger_scenario_list()
 
-    # scene_list = all_scenes
-    scene_list = [flex_pole_scene_5cm]
+    scene_list = all_scenes
+    # scene_list = [flex_pole_scene_5cm]
     actuator_list = ["VerticalForce", "HorizontalForce"]
     # actuator_list = ['VerticalForce']
     # actuator_list = ['HorizontalForce']
@@ -332,7 +330,7 @@ if __name__ == "__main__":
                 "position_threshold": 0.1,
             },
             "log_file": create_file_name(scene, claw_scenario, actuator),
-            "headless": False,
+            "headless": True,
             "autoquit": True,
         }
         for scene in scene_list
@@ -342,7 +340,5 @@ if __name__ == "__main__":
 
     random.shuffle(scenario_list)
 
-    print("first scenario:")
-    pprint(scenario_list[0])
 
-    batch_claw_test(scenario_list=scenario_list, max_processes=4)
+    batch_claw_test(scenario_list=scenario_list, max_processes=2)

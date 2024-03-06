@@ -6,7 +6,7 @@ from logger import log
 class TestActuator:
     def __init__(self, sim_api, name, force, log_file=None, wait_time=0.0, position_threshold=0.0, *args, **kwargs) -> None:
         self.sim_api = sim_api
-        print("searching for " + name + "in scene")
+        print("searching for " + name + " in scene")
         self.name = name
         self.handle=sim_api.getObject(":/" + name)
         
