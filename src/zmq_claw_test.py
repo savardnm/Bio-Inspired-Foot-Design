@@ -260,6 +260,7 @@ def create_louse_scenario_list():
         (45, 10),
         (135, 10),
         (405, 10),
+        (810, 10),
     ]
 
     scenario_list = [
@@ -311,13 +312,13 @@ if __name__ == "__main__":
     actuator_list = ["VerticalForce", "HorizontalForce"]
     # actuator_list = ['VerticalForce']
     # actuator_list = ['HorizontalForce']
-    reps = 2
+    reps = 10
 
     force = {
         "starting_value": 1.0,
         "mode": "hybrid",
         "lin_rate": 100.0,
-        "exp_rate": 1.025,
+        "exp_rate": 1.05,
     }
 
     scenario_list = [

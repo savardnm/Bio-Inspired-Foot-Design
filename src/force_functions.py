@@ -14,7 +14,7 @@ def exponential_growth(simulation_time, starting_value, rate, *args, **kwargs):
 def hybrid_growth(simulation_time, starting_value, lin_rate, exp_rate, *args, **kwargs):
     lin_growth = lin_rate * simulation_time
     exp_growth = exp_rate ** simulation_time
-    output = starting_value * exp_growth + lin_growth
+    output = exp_growth * lin_growth
     return output
 
 # Extract and process the growth data passed in

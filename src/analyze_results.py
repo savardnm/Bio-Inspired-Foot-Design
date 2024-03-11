@@ -14,6 +14,7 @@ def analyze(results_dir):
     # compare_scenes(results_df)
     compare_finger_flex_effect(results_df)
     compare_louse_flex_effect(results_df)
+    compare_louse_pad_size_effect(results_df)
 
     plt.show()
 
@@ -38,7 +39,22 @@ def compare_louse_flex_effect(df):
         ("pad_strength", "all"),
     ]
 
-    multi_boxplot(df, constant_filter, variable_filter_list, title="Effect of Flex Values on Finger Gripper")
+    multi_boxplot(df, constant_filter, variable_filter_list, title="Effect of Flex Values on Louse Gripper")
+
+
+def compare_louse_pad_size_effect(df):
+    constant_filter = {
+        "gripper": "Louse-Pad-Script",
+        "scene": "05-Pole-PY",
+        "pad_strength": "45"
+    }
+
+    variable_filter_list = [
+        ("applied_force", "all"),
+        ("num_pad_units", "all"),
+    ]
+
+    multi_boxplot(df, constant_filter, variable_filter_list, title="Effect of Pad Size on Louse Gripper")
 
 
 
