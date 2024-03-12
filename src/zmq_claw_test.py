@@ -158,7 +158,7 @@ async def handle_louse_options(
         print("set pad size to: ", num_pad_units)
 
     if pad_strength is not None:
-        # sim.callScriptFunction("set_pad_strength", script_handle, *pad_strength)
+        call_script_function(sim, "set_pad_strength", script_handle, *pad_strength)
         print("set pad strength to: ", pad_strength)
 
     if claw_torque is not None:
@@ -250,7 +250,7 @@ def create_basic_claw_scenario_list(claw_list):
 
 
 def create_louse_scenario_list():
-    num_pad_unit_list = [0, 3, 5, 8]
+    num_pad_unit_list = [0, 2, 4, 6]
     pad_strength_list = [
         (5, 5),
         (15, 10),
@@ -330,7 +330,7 @@ if __name__ == "__main__":
                 "position_threshold": 0.1,
             },
             "log_file": create_file_name(scene, claw_scenario, actuator),
-            "headless": False,
+            "headless": True,
             "autoquit": True,
         }
         for scene in scene_list
@@ -341,4 +341,4 @@ if __name__ == "__main__":
     random.shuffle(scenario_list)
 
 
-    batch_claw_test(scenario_list=scenario_list, max_processes=1)
+    batch_claw_test(scenario_list=scenario_list, max_processes=3)

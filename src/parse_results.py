@@ -39,8 +39,8 @@ def format_df_from_values(result, **parameters):
         if not field in parameters:
             parameters[field] = 0
 
-    parameters['gripper'] = parameters['path']
-    del parameters['path']
+    parameters["gripper"] = parameters["path"]
+    del parameters["path"]
 
     return parameters
 
@@ -84,6 +84,18 @@ def parse_data_line(line):
     value = float(clean_result)
 
     return value
+
+
+def csvdf():
+    labels = [
+        "scene",
+        "num_pad_units",
+        "pad_strength",
+        "applied_force",
+        "result",
+        "flex_strength",
+        "gripper",
+    ]
 
 
 if __name__ == "__main__":
