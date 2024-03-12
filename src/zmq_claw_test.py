@@ -83,9 +83,6 @@ def run_scenario(
 
     sim.setStepping(True)
 
-    sleep(10)
-
-
     sim.startSimulation()
 
     modify_gripper(sim, gripper, **claw_scenario)
