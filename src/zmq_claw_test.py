@@ -304,7 +304,8 @@ if __name__ == "__main__":
     # claw_list = [Louse_Pad]
     # claw_list = bio_claws
     # claw_scenario_list = create_basic_claw_scenario_list(claw_list)
-    claw_scenario_list = create_louse_scenario_list() + create_finger_scenario_list()
+    # claw_scenario_list = create_louse_scenario_list() + create_finger_scenario_list()
+    claw_scenario_list = create_louse_scenario_list()
     # claw_scenario_list = create_finger_scenario_list()
 
     scene_list = all_scenes
@@ -332,7 +333,7 @@ if __name__ == "__main__":
                 "position_threshold": 0.1,
             },
             "log_file": create_file_name(scene, claw_scenario, actuator),
-            "headless": True,
+            "headless": False,
             "autoquit": True,
         }
         for scene in scene_list
@@ -343,4 +344,4 @@ if __name__ == "__main__":
     random.shuffle(scenario_list)
 
 
-    batch_claw_test(scenario_list=scenario_list, max_processes=2)
+    batch_claw_test(scenario_list=scenario_list, max_processes=1)
