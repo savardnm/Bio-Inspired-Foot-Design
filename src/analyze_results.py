@@ -31,7 +31,7 @@ def compare_louse_flex_effect(df):
     constant_filter = {
         "gripper": "Louse-Pad-Script",
         "scene": "05-Pole-PY",
-        "num_pad_units": "5"
+        "num_pad_units": "4"
     }
 
     variable_filter_list = [
@@ -80,7 +80,6 @@ def multi_boxplot(df, constant_filter, variable_filter_list, title):
     data_list = []
 
     variable_filter_df(constant_filter_df, data_list, label_list, variable_filter_list)
-
 
     boxplot(
         title=title,

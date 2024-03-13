@@ -250,7 +250,7 @@ def create_basic_claw_scenario_list(claw_list):
 
 
 def create_louse_scenario_list():
-    num_pad_unit_list = [0, 2, 4, 6]
+    num_pad_unit_list = [0, 2, 4, 6, 8]
     pad_strength_list = [
         (5, 5),
         (15, 10),
@@ -305,8 +305,8 @@ if __name__ == "__main__":
     claw_scenario_list = create_louse_scenario_list()
     # claw_scenario_list = create_finger_scenario_list()
 
-    scene_list = all_scenes
-    # scene_list = [flex_pole_scene_5cm]
+    # scene_list = all_scenes
+    scene_list = [flex_pole_scene_5cm]
     actuator_list = ["VerticalForce", "HorizontalForce"]
     # actuator_list = ['VerticalForce']
     # actuator_list = ['HorizontalForce']
@@ -341,4 +341,4 @@ if __name__ == "__main__":
     random.shuffle(scenario_list)
 
 
-    batch_claw_test(scenario_list=scenario_list, max_processes=3)
+    batch_claw_test(scenario_list=scenario_list, max_processes=2)
