@@ -87,26 +87,6 @@ def compare_louse_flex_effect(df):
         x_axis_title="Pad Stiffness (N/m)",
         y_axis_title="Grip Force (N)",
     )
-    # constant_filter = {
-    #     "gripper": "Louse-Pad-Script",
-    #     "scene": "05-Pole-PY",
-    #     "num_pad_units": "8",
-    # }
-
-    # variable_filter_list = [
-    #     ("applied_force", "all"),
-    #     ("pad_strength", "all"),
-    # ]
-
-    # multi_boxplot(
-    #     df,
-    #     constant_filter,
-    #     variable_filter_list,
-    #     title="Effect of Flex Values on Louse Gripper",
-    #     x_axis_title="Pad Stiffness (N/m)",
-    #     y_axis_title="Grip Force (N)",
-    # )
-
 
 def compare_louse_pad_size_effect(df):
     constant_filter = {
@@ -121,25 +101,6 @@ def compare_louse_pad_size_effect(df):
         x_axis_title="Pad Size (Units)",
         y_axis_title="Grip Force (N)",
     )
-    # constant_filter = {
-    #     "gripper": "Louse-Pad-Script",
-    #     "scene": "05-Pole-PY",
-    #     "pad_strength": "45",
-    # }
-
-    # variable_filter_list = [
-    #     ("applied_force", "all"),
-    #     ("num_pad_units", "all"),
-    # ]
-
-    # multi_boxplot(
-    #     df,
-    #     constant_filter,
-    #     variable_filter_list,
-    #     title="Effect of Pad Size on Louse Gripper",
-    #     x_axis_title="Pad Size (Units)",
-    #     y_axis_title="Grip Force (N)",
-    # )
 
 
 def compare_finger_flex_effect(df):
@@ -151,30 +112,6 @@ def compare_finger_flex_effect(df):
         x_axis_title="Palm Flex Stiffness (Nm/rad)",
         y_axis_title="Grip Force (N)",
     )
-    # constant_filter = {
-    #     "gripper": "Finger-Flex-Script",
-    #     "scene": "05-Pole-PY",
-    # }
-
-    # force_option_list = ['VerticalForce', 'HorizontalForce']
-
-    # variable_filter_list = [
-    #     ("applied_force", "all"),
-    #     ("flex_strength", "all"),
-    # ]
-
-    # for force_option in force_option_list:
-    #     new_filter = deepcopy(constant_filter)
-    #     new_filter["applied_force"] = force_option
-    #     multi_boxplot(
-    #         df,
-    #         new_filter,
-    #         variable_filter_list,
-    #         title="Effect of Flex Values on Finger Gripper " + format_label(force_option),
-    #         x_axis_title="Palm Flex Stiffness (Nm/rad)",
-    #         y_axis_title="Grip Force (N)"
-    #     )
-
 
 def compare_louse_3d(df):
     criteria = {
@@ -211,10 +148,6 @@ def compare_louse_3d(df):
     ax.set_xlabel("Pad Size (Number of Units)")
     ax.set_ylabel("Pad Stiffness (N/m)")
     ax.set_zlabel("Grip Force (N)")
-
-    # plt.yscale('log')
-    # fig = plt.figure(figsize=(9, 7))
-    # ax = fig.add_axes([0.1, 0.15, 0.8, 0.75])
 
     surf = ax.plot_surface(
         np.array(num_pad_values),
@@ -316,7 +249,6 @@ def boxplot_results(df, title, x_axis="gripper", x_axis_list="all", **criteria):
 
     labels = ["\n".join(label.split("-")) for label in labels]
     ax.set_xticklabels(labels)
-    # plt.xticks([], labels, rotation='vertical')
     bp = ax.boxplot(data, showfliers=False, showmeans=True, meanline=True)
 
 
