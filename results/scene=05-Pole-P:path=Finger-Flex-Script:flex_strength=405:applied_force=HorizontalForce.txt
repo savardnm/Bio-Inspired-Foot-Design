@@ -8,3 +8,4 @@
 [3.10s] 	HorizontalForce final force:226.56N
 [2.85s] 	HorizontalForce final force:196.52N
 [3.00s] 	HorizontalForce final force:214.46N
+[3.15s] 	HorizontalForce final force:232.66N

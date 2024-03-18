@@ -251,13 +251,14 @@ def create_basic_claw_scenario_list(claw_list):
 
 def create_louse_scenario_list():
     num_pad_unit_list = [0, 2, 4, 6, 8]
+    # num_pad_unit_list = [3]
     pad_strength_list = [
         (5, 5),
         (15, 10),
+        (30, 10),
         (45, 10),
+        (90, 10),
         (135, 10),
-        (405, 10),
-        (810, 10),
     ]
 
     scenario_list = [
@@ -277,12 +278,11 @@ def create_finger_scenario_list():
     flex_strength_list = [
         (5, 0.1),
         (15, 0.1),
+        (30, 0.1),
         (45, 0.1),
         (90, 0.1),
         (135, 0.1),
         (270, 0.1),
-        (405, 0.1),
-        (810, 0.1),
     ]
 
     scenario_list = [
@@ -301,8 +301,8 @@ if __name__ == "__main__":
     # claw_list = [Louse_Pad]
     # claw_list = bio_claws
     # claw_scenario_list = create_basic_claw_scenario_list(claw_list)
-    # claw_scenario_list = create_louse_scenario_list() + create_finger_scenario_list()
-    claw_scenario_list = create_louse_scenario_list()
+    claw_scenario_list = create_louse_scenario_list() + create_finger_scenario_list()
+    # claw_scenario_list = create_louse_scenario_list()
     # claw_scenario_list = create_finger_scenario_list()
 
     # scene_list = all_scenes

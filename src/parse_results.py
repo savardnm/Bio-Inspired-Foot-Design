@@ -86,7 +86,7 @@ def parse_data_line(line):
     return value
 
 
-def csvdf():
+def get_important_labels():
     labels = [
         "scene",
         "num_pad_units",
@@ -96,6 +96,24 @@ def csvdf():
         "flex_strength",
         "gripper",
     ]
+
+    return labels
+
+def scenario_to_df(scenario):
+    for label in get_important_labels():
+        if label not in scenario:
+            scenario[label] = None
+
+    return pandas.DataFrame(data = [scenario])
+
+def df_to_scenario(df):
+    return df.to_dict('records')
+
+def df_to_csv(df, file_name, overwrite=False):
+    if os.path.exists(file_name) and not overwrite:
+        df.to_csv(file_name, index=False, header=False, mode='a')
+    else:
+        df.to_csv(file_name, index=False, header=True, mode='w')
 
 
 if __name__ == "__main__":

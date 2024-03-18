@@ -2,16 +2,25 @@ import numpy as np
 import matplotlib.pyplot as plt
 from parse_results import *
 from copy import deepcopy
+import math
+
+from mpl_toolkits.mplot3d import Axes3D  # <--- This is important for 3d plotting
+
+
+from matplotlib import cbook, cm
+from matplotlib.colors import LightSource
 
 
 def analyze(results_dir):
     results_df = results_to_df(results_dir)
     # print(results_df)
     print("all results >>>>\n", results_df.to_string(), "\nall results <<<<")
+    df_to_csv(results_df, results_dir + "csv/results.csv", overwrite=True)
     # average_trials(results_df)
     # compare_grippers(results_df)
     # compare_weights(results_df)
     # compare_scenes(results_df)
+    compare_louse_3d(results_df)
     compare_finger_flex_effect(results_df)
     compare_louse_flex_effect(results_df)
     compare_louse_pad_size_effect(results_df)
@@ -27,53 +36,199 @@ def compare_grippers(df):
     compare_vertical(df)
     compare_horizontal(df)
 
-def compare_louse_flex_effect(df):
-    constant_filter = {
-        "gripper": "Louse-Pad-Script",
+
+def force_boxplot_series(
+    df,
+    gripper,
+    variable_name,
+    base_title,
+    x_axis_title,
+    y_axis_title,
+    constant_filter={},
+    variable_values="all",
+):
+    base_constant_filter = {
+        "gripper": gripper,
         "scene": "05-Pole-PY",
-        "num_pad_units": "4"
     }
 
+    constant_filter = {**base_constant_filter, **constant_filter}
+
+    force_option_list = ["VerticalForce", "HorizontalForce"]
+
     variable_filter_list = [
-        ("applied_force", "all"),
-        ("pad_strength", "all"),
+        (variable_name, variable_values),
     ]
 
-    multi_boxplot(df, constant_filter, variable_filter_list, title="Effect of Flex Values on Louse Gripper")
+    for force_option in force_option_list:
+        new_filter = deepcopy(constant_filter)
+        new_filter["applied_force"] = force_option
+        multi_boxplot(
+            df,
+            new_filter,
+            variable_filter_list,
+            title=base_title + " " + format_label(force_option),
+            x_axis_title=x_axis_title,
+            y_axis_title=y_axis_title,
+        )
+
+
+def compare_louse_flex_effect(df):
+    constant_filter = {
+        "num_pad_units": "8",
+    }
+
+    force_boxplot_series(
+        df,
+        gripper="Louse-Pad-Script",
+        constant_filter=constant_filter,
+        variable_name="pad_strength",
+        base_title="Effect of Flex Values on Louse Gripper",
+        x_axis_title="Pad Stiffness (N/m)",
+        y_axis_title="Grip Force (N)",
+    )
+    # constant_filter = {
+    #     "gripper": "Louse-Pad-Script",
+    #     "scene": "05-Pole-PY",
+    #     "num_pad_units": "8",
+    # }
+
+    # variable_filter_list = [
+    #     ("applied_force", "all"),
+    #     ("pad_strength", "all"),
+    # ]
+
+    # multi_boxplot(
+    #     df,
+    #     constant_filter,
+    #     variable_filter_list,
+    #     title="Effect of Flex Values on Louse Gripper",
+    #     x_axis_title="Pad Stiffness (N/m)",
+    #     y_axis_title="Grip Force (N)",
+    # )
 
 
 def compare_louse_pad_size_effect(df):
     constant_filter = {
-        "gripper": "Louse-Pad-Script",
-        "scene": "05-Pole-PY",
-        "pad_strength": "45"
+        "pad_strength": "45",
     }
+    force_boxplot_series(
+        df,
+        gripper="Louse-Pad-Script",
+        constant_filter=constant_filter,
+        variable_name="num_pad_units",
+        base_title="Effect of Pad Size on Louse Gripper",
+        x_axis_title="Pad Size (Units)",
+        y_axis_title="Grip Force (N)",
+    )
+    # constant_filter = {
+    #     "gripper": "Louse-Pad-Script",
+    #     "scene": "05-Pole-PY",
+    #     "pad_strength": "45",
+    # }
 
-    variable_filter_list = [
-        ("applied_force", "all"),
-        ("num_pad_units", "all"),
-    ]
+    # variable_filter_list = [
+    #     ("applied_force", "all"),
+    #     ("num_pad_units", "all"),
+    # ]
 
-    multi_boxplot(df, constant_filter, variable_filter_list, title="Effect of Pad Size on Louse Gripper")
-
+    # multi_boxplot(
+    #     df,
+    #     constant_filter,
+    #     variable_filter_list,
+    #     title="Effect of Pad Size on Louse Gripper",
+    #     x_axis_title="Pad Size (Units)",
+    #     y_axis_title="Grip Force (N)",
+    # )
 
 
 def compare_finger_flex_effect(df):
-    constant_filter = {
-        "gripper": "Finger-Flex-Script",
-        "scene": "05-Pole-PY",
-    }
+    force_boxplot_series(
+        df,
+        gripper="Finger-Flex-Script",
+        variable_name="flex_strength",
+        base_title="Effect of Flex Values on Finger Gripper",
+        x_axis_title="Palm Flex Stiffness (Nm/rad)",
+        y_axis_title="Grip Force (N)",
+    )
+    # constant_filter = {
+    #     "gripper": "Finger-Flex-Script",
+    #     "scene": "05-Pole-PY",
+    # }
 
-    variable_filter_list = [
-        ("applied_force", "all"),
-        ("flex_strength", "all"),
+    # force_option_list = ['VerticalForce', 'HorizontalForce']
+
+    # variable_filter_list = [
+    #     ("applied_force", "all"),
+    #     ("flex_strength", "all"),
+    # ]
+
+    # for force_option in force_option_list:
+    #     new_filter = deepcopy(constant_filter)
+    #     new_filter["applied_force"] = force_option
+    #     multi_boxplot(
+    #         df,
+    #         new_filter,
+    #         variable_filter_list,
+    #         title="Effect of Flex Values on Finger Gripper " + format_label(force_option),
+    #         x_axis_title="Palm Flex Stiffness (Nm/rad)",
+    #         y_axis_title="Grip Force (N)"
+    #     )
+
+
+def compare_louse_3d(df):
+    criteria = {
+        "gripper": "Louse-Pad-Script",
+        "scene": "05-Pole-PY",
+        "applied_force": "VerticalForce",
+    }
+    louse_df = filter_df(df, **criteria)
+
+    pprint(louse_df)
+
+    num_pad_values = list(map(int, louse_df["num_pad_units"].unique()))
+    pad_str_values = list(map(int, louse_df["pad_strength"].unique()))
+
+    num_pad_values = sorted(num_pad_values, key=lambda opt: int(opt))
+    pad_str_values = sorted(pad_str_values, key=lambda opt: int(opt))
+    # pad_str_values = pad_str_values[0:-2]
+
+    str_average_list = [
+        average_over_values(df, pad_strength=pad_strength, num_pad_units=num_pad_units)
+        for pad_strength in pad_str_values
+        for num_pad_units in num_pad_values
     ]
 
-    multi_boxplot(df, constant_filter, variable_filter_list, title="Effect of Flex Values on Finger Gripper")
+    str_average_list = [0 if math.isnan(value) else value for value in str_average_list]
+    str_average_list = np.array(str_average_list).reshape(
+        (len(pad_str_values), len(num_pad_values))
+    )
+
+    num_pad_values, pad_str_values = np.meshgrid(num_pad_values, pad_str_values)
+
+    # Set up plot
+    fig, ax = plt.subplots(subplot_kw=dict(projection="3d"))
+    ax.set_xlabel("Pad Size (Number of Units)")
+    ax.set_ylabel("Pad Stiffness (N/m)")
+    ax.set_zlabel("Grip Force (N)")
+
+    # plt.yscale('log')
+    # fig = plt.figure(figsize=(9, 7))
+    # ax = fig.add_axes([0.1, 0.15, 0.8, 0.75])
+
+    surf = ax.plot_surface(
+        np.array(num_pad_values),
+        np.array(pad_str_values),
+        str_average_list,
+        cmap="inferno",
+        rstride=1,
+        cstride=1,
+    )
 
 
-
-def multi_boxplot(df, constant_filter, variable_filter_list, title):
+def multi_boxplot(
+    df, constant_filter, variable_filter_list, title, x_axis_title="", y_axis_title=""
+):
     constant_filter_df = filter_df(df, **constant_filter)
 
     label_list = []
@@ -85,33 +240,37 @@ def multi_boxplot(df, constant_filter, variable_filter_list, title):
         title=title,
         labels=label_list,
         data=data_list,
+        x_axis_title=x_axis_title,
+        y_axis_title=y_axis_title,
+    )
+
+
+def format_label(label):
+    return (
+        label.replace("VerticalForce", "Shear Force")
+        .replace("HorizontalForce", "Normal Force")
+        .replace("05-Pole-PY", "Wrist Horiztonal Flex")
+        .replace("05-Pole-P", "Wrist Horiztonal Rigid")
     )
 
 
 def variable_filter_df(df, data_list, label_list, variable_filter_list, label=""):
-    print("variable filtering...")
-
     if not variable_filter_list:
-        data_list.append(df['result'])
-        label_list.append(label)
+        data_list.append(df["result"])
+        label_list.append(format_label(label))
         return
-    
+
     variable_filter_list = deepcopy(variable_filter_list)
     column, option_list = variable_filter_list.pop(0)
-
-    print(column, option_list)
 
     if option_list == "all":
         option_list = df[column].unique()
 
-    print(column, option_list)
     try:
         option_list = sorted(option_list, key=lambda opt: int(opt))
-        print("sorted")
     except:
         pass
 
-    print(column, option_list)
     for option in option_list:
         new_label = label + "\n" + str(option)
 
@@ -119,7 +278,9 @@ def variable_filter_df(df, data_list, label_list, variable_filter_list, label=""
 
         filtered_df = filter_df(df, **option_filter)
 
-        variable_filter_df(filtered_df, data_list, label_list, variable_filter_list, new_label)
+        variable_filter_df(
+            filtered_df, data_list, label_list, variable_filter_list, new_label
+        )
 
 
 def boxplot_results(df, title, x_axis="gripper", x_axis_list="all", **criteria):
@@ -154,18 +315,20 @@ def boxplot_results(df, title, x_axis="gripper", x_axis_list="all", **criteria):
     plt.title(title)
 
     labels = ["\n".join(label.split("-")) for label in labels]
-    ax.set_xticklabels(labels, rotation="vertical")
+    ax.set_xticklabels(labels)
     # plt.xticks([], labels, rotation='vertical')
-    bp = ax.boxplot(data, showfliers=False)
+    bp = ax.boxplot(data, showfliers=False, showmeans=True, meanline=True)
 
 
-def boxplot(title, labels, data):
+def boxplot(title, labels, data, x_axis_title="", y_axis_title=""):
     fig = plt.figure(figsize=(9, 7))
     ax = fig.add_axes([0.1, 0.15, 0.8, 0.75])
     plt.title(title)
 
     ax.set_xticklabels(labels, rotation="vertical")
-    bp = ax.boxplot(data, showfliers=False)
+    plt.xlabel(x_axis_title)
+    plt.ylabel(y_axis_title)
+    bp = ax.boxplot(data, showfliers=False, showmeans=True)
 
 
 def compare_scenes(df):
@@ -277,7 +440,9 @@ def average_trials(df):
 
     data = [
         format_df_from_values(
-            average_over_values(df, scene, gripper, applied_force),
+            average_over_values(
+                df, scene=scene, gripper=gripper, applied_force=applied_force
+            ),
             scene=scene,
             gripper=gripper,
             applied_force=applied_force,
@@ -292,10 +457,9 @@ def average_trials(df):
     return average_df
 
 
-def average_over_values(df, scene, gripper, applied_force):
-    df_filtered = filter_df(
-        df=df, scene=scene, gripper=gripper, applied_force=applied_force
-    )
+def average_over_values(df, **criteria):
+    # print("averaging over values: ", criteria)
+    df_filtered = filter_df(df=df, **criteria)
     mean_series = df_filtered.mean()
     return mean_series["result"]
 
@@ -306,7 +470,7 @@ def filter_df(df, **criteria):
 
 def match_values(df, **criteria):
     first_key = next(iter(criteria))
-    first_value = criteria.pop(first_key)
+    first_value = str(criteria.pop(first_key))
 
     if not isinstance(first_value, list):
         first_value = [
