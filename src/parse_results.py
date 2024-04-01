@@ -37,7 +37,7 @@ def format_df_from_values(result, **parameters):
 
     for field in mandatory_fields:
         if not field in parameters:
-            parameters[field] = 0
+            parameters[field] = -1
 
     parameters["gripper"] = parameters["path"]
     del parameters["path"]

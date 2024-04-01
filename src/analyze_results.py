@@ -16,14 +16,11 @@ def analyze(results_dir):
     # print(results_df)
     print("all results >>>>\n", results_df.to_string(), "\nall results <<<<")
     df_to_csv(results_df, results_dir + "csv/results.csv", overwrite=True)
-    # average_trials(results_df)
-    # compare_grippers(results_df)
-    # compare_weights(results_df)
-    # compare_scenes(results_df)
     compare_louse_3d(results_df)
     compare_finger_flex_effect(results_df)
     compare_louse_flex_effect(results_df)
     compare_louse_pad_size_effect(results_df)
+    compare_scenes(results_df)
 
     plt.show()
 
@@ -36,6 +33,34 @@ def compare_grippers(df):
     compare_vertical(df)
     compare_horizontal(df)
 
+def compare_scenes(df):
+    # constant_filter = {
+    #     "num_pad_units": [-1, 8],
+    #     "pad_strength": [-1, 45],
+    #     "flex_strength": [-1, 45],
+    # }
+    constant_filter = {}
+    
+    variable_filter_list = [
+        ('gripper', 'all'),
+        ('scene', ['05-Pole-PY', '05-Pole-P']),
+    ]
+
+    force_option_list = ["VerticalForce", "HorizontalForce"]
+
+    for force_option in force_option_list:
+        new_filter = deepcopy(constant_filter)
+        new_filter["applied_force"] = force_option
+        print("new filter: ", new_filter, "\n<<<<<< new filter")
+        print("variable_filter_list: ", variable_filter_list, "\n<<<<<< variable_filter_list")
+        multi_boxplot(
+            df,
+            new_filter,
+            variable_filter_list,
+            title="Effect of Y Axis Wrist Flex" + " " + format_label(force_option),
+            x_axis_title="Scenario",
+            y_axis_title="Grip Strength",
+        )
 
 def force_boxplot_series(
     df,
@@ -126,9 +151,11 @@ def compare_louse_3d(df):
     num_pad_values = list(map(int, louse_df["num_pad_units"].unique()))
     pad_str_values = list(map(int, louse_df["pad_strength"].unique()))
 
+
     num_pad_values = sorted(num_pad_values, key=lambda opt: int(opt))
     pad_str_values = sorted(pad_str_values, key=lambda opt: int(opt))
-    # pad_str_values = pad_str_values[0:-2]
+    pad_str_values = pad_str_values[0:-2]
+    num_pad_values = num_pad_values[1:]
 
     str_average_list = [
         average_over_values(df, pad_strength=pad_strength, num_pad_units=num_pad_units)
@@ -182,8 +209,10 @@ def format_label(label):
     return (
         label.replace("VerticalForce", "Shear Force")
         .replace("HorizontalForce", "Normal Force")
-        .replace("05-Pole-PY", "Wrist Horiztonal Flex")
-        .replace("05-Pole-P", "Wrist Horiztonal Rigid")
+        .replace("05-Pole-PY", "Flex Wrist")
+        .replace("05-Pole-P", "Rigid Wrist")
+        .replace("Louse-Pad-Script", "Louse Claw")
+        .replace("Finger-Flex-Script", "Finger Claw")
     )
 
 
@@ -244,7 +273,7 @@ def boxplot_results(df, title, x_axis="gripper", x_axis_list="all", **criteria):
             data.append(results)
 
     fig = plt.figure(figsize=(9, 7))
-    ax = fig.add_axes([0.1, 0.15, 0.8, 0.75], label="gripper")
+    ax = fig.add_axes([0.1, 0.25, 0.8, 0.75], label="gripper")
     plt.title(title)
 
     labels = ["\n".join(label.split("-")) for label in labels]
@@ -263,9 +292,9 @@ def boxplot(title, labels, data, x_axis_title="", y_axis_title=""):
     bp = ax.boxplot(data, showfliers=False, showmeans=True)
 
 
-def compare_scenes(df):
-    compare_horizontal_scenes(df)
-    compare_vertical_scenes(df)
+# def compare_scenes(df):
+#     compare_horizontal_scenes(df)
+#     compare_vertical_scenes(df)
 
 
 def compare_horizontal_scenes(df):
