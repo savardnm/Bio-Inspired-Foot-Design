@@ -12,8 +12,8 @@ from coppeliasim_wrapper import run_coppeliasim
 
 from test_actuator import TestActuator
 
-from claws import *
-from scenes import *
+from coppelia_files.claws import *
+from coppelia_files.scenes import *
 
 
 coppelia_path = (
@@ -33,20 +33,20 @@ def batch_claw_test(scenario_list, max_processes=6):
     with multiprocessing.Pool(
         max_processes, initializer=init_process, initargs=initializer_args
     ) as p:
-        p.map(run_scenario_dict, scenario_list)
+        results = p.map(run_scenario_dict, scenario_list)
 
+    return results
     # for scenario in scenario_list:
     #     run_scenario_dict(scenario)
 
 
 def run_scenario_dict(scenario_dict):
-    run_scenario(**scenario_dict)
+    return run_scenario(**scenario_dict)
 
 
 def run_scenario(
     claw_scenario,
     actuator,
-    log_file,
     *args,
     **coppelia_kwargs,
 ):
@@ -58,17 +58,13 @@ def run_scenario(
     coppelia_thread = threading.Thread(target=run_coppeliasim, kwargs=coppelia_kwargs)
     coppelia_thread.start()
 
-    print("connecting to port ", port, flush=True)
     sim = connect_to_api(port)  # will block until loaded
-    print("connected to port ", port, flush=True)
 
     sim.setInt32Parameter(sim.intparam_dynamic_engine, sim.physics_newton)
     
     startup_lock.release()
-
+    
     attachment_point = sim.getObject(":/AttachmentPoint")  # find attachment point
-
-    print("attaching gripper ====================")
 
     gripper = attach_gripper(
         sim,
@@ -77,30 +73,29 @@ def run_scenario(
         offset=[0, 0.05, 0],
     )
 
-    print("================== attached gripper")
-
-    actuator = TestActuator(sim_api=sim, log_file=log_file, **actuator)
+    actuator = TestActuator(sim_api=sim, **actuator)
 
     sim.setStepping(True)
 
     sim.startSimulation()
 
     modify_gripper(sim, gripper, **claw_scenario)
+    actuator_force = 0
 
     while not is_stopped(sim):
         t = sim.getSimulationTime()
         # print(
         #     f"Simulation time: {t:.2f} [s] (simulation running synchronously to client, i.e. stepped)"
         # )
-        actuator.actuation_loop()
+        actuator_force = actuator.actuation_loop()
         actuator.sensor_loop()
         sim.step()
 
+    return actuator_force
+
 
 def attach_gripper(sim, claw_scenario, attachment_point, offset):
-    print("Creating gripper ============")
     gripper = create_gripper(sim, **claw_scenario)
-    print("================= Created gripper")
     sim.setObjectPosition(gripper, offset, attachment_point)
     sim.setObjectParent(gripper, attachment_point, True)
     return gripper
@@ -114,7 +109,6 @@ def create_gripper(sim, path, *args, **kwargs):
 
 def modify_gripper(sim, object_handle, *args, **kwargs):
     script_handle = sim.getScript(sim.scripttype_childscript, object_handle)
-    print("fetched script handle: ", script_handle)
 
     asyncio.run(
         handle_louse_options(
@@ -126,18 +120,15 @@ def modify_gripper(sim, object_handle, *args, **kwargs):
         )
     )
 
-    print("louse options handled")
 
     handle_finger_options(
         sim, object_handle=object_handle, script_handle=script_handle, *args, **kwargs
     )
 
-    print("finger options handled")
 
 
 async def async_call_script_function(sim, function_name, script_handle, *params):
     await sim.callScriptFunction("set_pad_size", script_handle, *params)
-    print("sim script done")
 
 
 async def handle_louse_options(
@@ -149,21 +140,14 @@ async def handle_louse_options(
     *args,
     **kwargs,
 ):
-    # print(sim.setStepping(False))
     if num_pad_units is not None:
-        print("setting pad size to: ", num_pad_units)
         call_script_function(sim, "set_pad_size", script_handle, num_pad_units)
-        # sim.executeScriptString("set_pad_size(num_pad_units)", script_handle)
-        # async_call_script_function(sim, "set_pad_size", script_handle, num_pad_units)
-        print("set pad size to: ", num_pad_units)
 
     if pad_strength is not None:
         call_script_function(sim, "set_pad_strength", script_handle, *pad_strength)
-        print("set pad strength to: ", pad_strength)
 
     if claw_torque is not None:
-        # sim.callScriptFunction("set_claw_torques", script_handle, claw_torque)
-        print("set torque to: ", claw_torque)
+        sim.callScriptFunction("set_claw_torques", script_handle, claw_torque)
 
 
 def handle_finger_options(
@@ -240,10 +224,8 @@ def create_file_name(*metadata_fields):
 # on top of stiffness
 # Could be evolved: % of covered area
 
-
 def pack_scenario(**kwargs):
     return kwargs
-
 
 def create_basic_claw_scenario_list(claw_list):
     return [{"path": path} for path in claw_list]
@@ -329,7 +311,7 @@ if __name__ == "__main__":
                 "wait_time": 1.0,
                 "position_threshold": 0.1,
             },
-            "log_file": create_file_name(scene, claw_scenario, actuator),
+            # "log_file": create_file_name(scene, claw_scenario, actuator),
             "headless": False,
             "autoquit": True,
         }
@@ -340,5 +322,7 @@ if __name__ == "__main__":
 
     random.shuffle(scenario_list)
 
+    scenario_list = scenario_list[0:5]
 
-    batch_claw_test(scenario_list=scenario_list, max_processes=1)
+
+    print("results: ", batch_claw_test(scenario_list=scenario_list, max_processes=4))
