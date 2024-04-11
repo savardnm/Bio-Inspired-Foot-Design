@@ -71,7 +71,7 @@ class GripStrengthObjective:
                 "wait_time": 1.0,
                 "position_threshold": 0.1,
             },
-            "headless": False,
+            "headless": True,
             "autoquit": True,
         }
 
@@ -79,7 +79,7 @@ class GripStrengthObjective:
 
 
 if __name__ == '__main__':
-    population_size = 10
+    population_size = 24
 
     initial_population = initialize_population(
         population_size = population_size,
@@ -91,21 +91,15 @@ if __name__ == '__main__':
     )
 
     crossover_mechanism = SimpleCrossover(
-        crossover_point = 4
+        crossover_point = 5
     )
 
     evolution_mechanism = LastNReplacement(
-        n_replacement = 10,
+        n_replacement = int((population_size / 4)),
         crossover_mechanism = crossover_mechanism
     )
 
-    end_condition = MaxTrials(5)
-
-    objective = GripStrengthObjective()
-    random_scenarios = np.uint8(map_range(np.random.rand(1), 0, 255))
-    scenario_list = list(map(objective.binary_to_scenario, random_scenarios))
-    
-    pprint(scenario_list)
+    end_condition = MaxTrials(25)
 
     # batch_claw_test(scenario_list, max_processes=1)
 
