@@ -79,7 +79,7 @@ class GripStrengthObjective:
 
 
 if __name__ == '__main__':
-    population_size = 24
+    population_size = 30
 
     initial_population = initialize_population(
         population_size = population_size,
@@ -87,7 +87,7 @@ if __name__ == '__main__':
     )
 
     objective_function = GripStrengthObjective(
-
+        max_processes=8
     )
 
     crossover_mechanism = SimpleCrossover(
@@ -95,11 +95,11 @@ if __name__ == '__main__':
     )
 
     evolution_mechanism = LastNReplacement(
-        n_replacement = int((population_size / 4)),
+        n_replacement = 6,
         crossover_mechanism = crossover_mechanism
     )
 
-    end_condition = MaxTrials(25)
+    end_condition = MaxTrials(30)
 
     # batch_claw_test(scenario_list, max_processes=1)
 
@@ -108,6 +108,7 @@ if __name__ == '__main__':
         objective_function = objective_function,
         evolution_mechanism = evolution_mechanism,
         end_condition = end_condition,
+        log_file="/home/nathan/Documents/GitHub/Bio-Inspired-Foot-Design/results/csv/ga_results_complex.csv"
         )
 
     

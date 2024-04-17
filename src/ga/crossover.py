@@ -1,26 +1,27 @@
 from typing import Any
 from numpy import *
-class SimpleCrossover:
-    def __init__(self, crossover_point) -> None:
-        self.crossover_point = crossover_point
-    
+
+class Crossover:
     def __call__(self, *args: Any, **kwds: Any) -> Any:
         return self.crossover_generation(*args, **kwds)
+
+    def crossover(self, parent_1, parent_2):
+        print("unimplemented crossover function")
 
     def crossover_generation(self, parent_list):
         child_list = []
 
-        for i, _ in enumerate(parent_list):
-            if (i % 2):
-                continue
-            
-            parent_1 = parent_list[i]
-            parent_2 = parent_list[i+1]
+        for parent_pair in parent_list:
+            parent_1, parent_2 = parent_pair
 
             child_list += self.crossover(parent_1, parent_2)
 
         return child_list
-
+    
+class SimpleCrossover (Crossover):
+    def __init__(self, crossover_point) -> None:
+        self.crossover_point = crossover_point
+    
     def crossover(self, parent_1, parent_2):
         mask = ~(parent_1 * uint8(0)) >> uint8(self.crossover_point)
 
@@ -31,3 +32,33 @@ class SimpleCrossover:
 
         
         
+class MultiCrossover (Crossover):
+    def __init__(self, crossover_point_list) -> None:
+        # Note: must pass a list with an EVEN number of points
+        self.crossover_interval_list = list(zip(
+            crossover_point_list[::2],
+            crossover_point_list[1::2]
+        ))
+        
+    
+    def crossover(self, parent_1, parent_2):
+
+        zero = (parent_1 & uint8(0))
+        nbits = zero.nbytes * 8
+        mask = (parent_1 & uint8(0))
+
+        for interval in self.crossover_interval_list:
+            right_point, left_point = interval
+
+            print(right_point, left_point)
+
+            left_submask = ~zero >> uint8(nbits - left_point)
+            right_submask = ~zero >> uint8(nbits - right_point)
+
+            submask = left_submask & ~right_submask
+            mask = mask | submask
+
+        child_1 = (parent_1 & mask) | (parent_2 & ~mask) 
+        child_2 = (parent_2 & mask) | (parent_1 & ~mask) 
+
+        return [child_1, child_2]

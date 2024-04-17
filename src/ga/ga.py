@@ -7,7 +7,7 @@ from evolution import *
 
 import pandas as pd
 
-def run_ga(initial_population, objective_function, evolution_mechanism, end_condition):
+def run_ga(initial_population, objective_function, evolution_mechanism, end_condition, log_file="/home/nathan/Documents/GitHub/Bio-Inspired-Foot-Design/results/csv/ga_results.csv"):
     population = initial_population
 
     generation = 0
@@ -40,7 +40,7 @@ def run_ga(initial_population, objective_function, evolution_mechanism, end_cond
 
         data_df = data_df.append(data_list)
 
-        data_df.to_csv("/home/nathan/Documents/GitHub/Bio-Inspired-Foot-Design/results/csv/ga_results.csv")
+        data_df.to_csv(log_file)
         
         population = evolution_mechanism(population, list(population_results))
 

@@ -34,18 +34,41 @@ def compare_generations(df):
         x_axis_title="Generation",
         y_axis_title="Grip Strength",
     )
+    
+    multi_boxplot(
+        df,
+        constant_filter,
+        variable_filter_list,
+        title="Pad Size of Generations",
+        x_axis_title="Generation",
+        y_axis_title="Pad Size",
+        value_column="num_pad_units",
+    )
+    
+    multi_boxplot(
+        df,
+        constant_filter,
+        variable_filter_list,
+        title="Pad Strength of Generations",
+        x_axis_title="Generation",
+        y_axis_title="Pad Strength",
+        value_column="pad_strength",
+    )
+
+
+
 
 def multi_boxplot(
-    df, constant_filter, variable_filter_list, title, x_axis_title="", y_axis_title=""
+    df, constant_filter, variable_filter_list, title, x_axis_title="", y_axis_title="", value_column="result"
 ):
     constant_filter_df = filter_df(df, **constant_filter)
 
     label_list = []
     data_list = []
 
-    variable_filter_df(constant_filter_df, data_list, label_list, variable_filter_list)
+    variable_filter_df(constant_filter_df, data_list, label_list, variable_filter_list, value_column=value_column)
 
-    print("!", data_list, "\n\n", label_list)
+    # print("!", data_list, "\n\n", label_list)
 
     boxplot(
         title=title,
@@ -67,9 +90,10 @@ def format_label(label):
     )
 
 
-def variable_filter_df(df, data_list, label_list, variable_filter_list, label=""):
+def variable_filter_df(df, data_list, label_list, variable_filter_list, label="", value_column="result"):
     if not variable_filter_list:
-        data_list.append(df["result"])
+        print("found value column: ", value_column, ": ", df[value_column])
+        data_list.append(df[value_column])
         label_list.append(format_label(label))
         return
 
@@ -87,21 +111,21 @@ def variable_filter_df(df, data_list, label_list, variable_filter_list, label=""
         pass
 
 
-    print('all criteria', column, option_list)
+    # print('all criteria', column, option_list)
 
     for option in option_list:
 
-        print('criteria: ', option)
+        # print('criteria: ', option)
         new_label = label + "\n" + str(option)
 
         option_filter = {column: option}
 
         filtered_df = filter_df(df, **option_filter)
 
-        print('criteria filtered', filtered_df)
+        # print('criteria filtered', filtered_df)
 
         variable_filter_df(
-            filtered_df, data_list, label_list, variable_filter_list, new_label
+            filtered_df, data_list, label_list, variable_filter_list, new_label, value_column=value_column
         )
 
 
@@ -278,11 +302,11 @@ def average_trials(df):
     return average_df
 
 
-def average_over_values(df, **criteria):
+def average_over_values(df, value_column="result", **criteria):
     # print("averaging over values: ", criteria)
     df_filtered = filter_df(df=df, **criteria)
     mean_series = df_filtered.mean()
-    return mean_series["result"]
+    return mean_series[value_column]
 
 
 def filter_df(df, **criteria):
@@ -294,7 +318,7 @@ def filter_df(df, **criteria):
 
 
 def match_values(df, **criteria):
-    print("filtering with criteria: ", criteria)
+    # print("filtering with criteria: ", criteria)
 
     first_key = next(iter(criteria))
     first_value = criteria.pop(first_key)

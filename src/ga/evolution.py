@@ -20,7 +20,7 @@ class LastNReplacement:
 
         replacement_children = self.crossover_mechanism(
             parent_list=self.extract_best_performers(
-                population, results, self.n_replacement
+                population, results, self.n_replacement, paired=True
             )
         )
 
@@ -30,10 +30,15 @@ class LastNReplacement:
 
         return next_generation
 
-    def extract_best_performers(self, population, results, num):
+    def extract_best_performers(self, population, results, num, paired=False):
         population_results = list(zip(population, results))
         sorted_population = sorted(  # Sort based on result
             population_results, key=lambda x: x[1], reverse=True
         )
 
-        return [x[0] for x in sorted_population[0:num]]
+        best_performers = [x[0] for x in sorted_population[0:num]]
+
+        if paired:
+            return zip(best_performers[::2], best_performers[1::2])
+
+        return best_performers
