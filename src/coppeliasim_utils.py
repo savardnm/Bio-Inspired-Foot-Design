@@ -1,5 +1,5 @@
-from threading import Thread
 from coppeliasim_zmqremoteapi_client import RemoteAPIClient
+import numpy as np
 
 def is_stopped(sim):
     return sim.getSimulationState() == sim.simulation_stopped
@@ -21,6 +21,7 @@ def connect_to_api(port):
 
 def set_torque(sim, object, motor_torque):
     sim.setJointTargetForce(object, motor_torque)
+    print("set torque")
 
 
 def set_spring_constants(sim, object, k, c):
@@ -36,12 +37,39 @@ def get_all_objects(sim, object_search_string):
         if next_object < 0:
             break
         object_handle_list.append(next_object)
-        print("found next:", next_object)
         i = i + 1
     return object_handle_list
 
-def rotate_object(sim, object_handle, axis, rotation, local):
-    print(object_handle, axis, rotation)
+def get_all_children(sim, object_handle):
+    i = 0
+    child_list = []
+    while True:
+        next_object = sim.getObjectChild(object_handle, i)
+        if next_object < 0:
+            break
+        child_list.append(next_object)
+        i = i + 1
+    return child_list
+
+def rotate_object(sim, object_handle, axis, angle, local=False):
+    print("rotating!!!! <<<")
+    object_position = sim.getObjectPosition(object_handle)
+    object_pose = sim.getObjectPose(object_handle)
+
+    if local:
+        # if local, use a single local axis (x: 0, y: 1, or z: 2) instead of the axis vector
+        object_pose_matrix = sim.getObjectMatrix(object_handle)
+        object_pose_matrix = np.reshape(object_pose_matrix, (3,4))
+        print("pose: ", object_pose_matrix, "\naxis", axis, "\nnew axis: " )
+        print(np.array(object_pose_matrix)[0:3, axis])
+        axis = np.array(object_pose_matrix)[0:3, axis].tolist()
+
+    object_pose_rotated = sim.rotateAroundAxis(object_pose, axis, object_position, angle)
+
+
+    sim.setObjectPose(object_handle, object_pose_rotated)
+    sim.auxiliaryConsolePrint(0, "string text")
+    # print(object_handle, axis, rotation, local)
 
 def duplicate_objects(sim, object_list, offset=[0, 0, 0], offset_frame=None):
     copied_objects = sim.copyPasteObjects(object_list, 0)
@@ -56,6 +84,19 @@ def duplicate_objects(sim, object_list, offset=[0, 0, 0], offset_frame=None):
 
     return copied_objects
 
+def scale_object(sim, object_handle, scale):
+    print('handle:', object_handle, '\nscale:', scale)
+    sim.scaleObject(object_handle, float(scale[0]), float(scale[1]), float(scale[2]))
+    
+
+def move_object(sim, object_handle, offset, frame=None):
+    if None == frame:
+        frame = object_handle
+
+    starting_pos = sim.getObjectPosition(object_handle, frame)
+    ending_pos = (np.array(starting_pos) + np.array(offset)).tolist()
+
+    sim.setObjectPosition(object_handle, ending_pos, frame)
 
 def call_script_function(sim, function_name, script_handle, *args):
     sim.callScriptFunction(function_name, script_handle, *args)
