@@ -28,6 +28,20 @@ def set_spring_constants(sim, object, k, c):
     sim.setObjectFloatParam(object, sim.jointfloatparam_kc_k, k)
     sim.setObjectFloatParam(object, sim.jointfloatparam_kc_c, c)
 
+def get_all_objects(sim, object_search_string):
+    i = 0
+    object_handle_list = []
+    while True:
+        next_object = sim.getObject(object_search_string, {'index': i, 'noError': True})
+        if next_object < 0:
+            break
+        object_handle_list.append(next_object)
+        print("found next:", next_object)
+        i = i + 1
+    return object_handle_list
+
+def rotate_object(sim, object_handle, axis, rotation, local):
+    print(object_handle, axis, rotation)
 
 def duplicate_objects(sim, object_list, offset=[0, 0, 0], offset_frame=None):
     copied_objects = sim.copyPasteObjects(object_list, 0)

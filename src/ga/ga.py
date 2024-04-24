@@ -38,7 +38,9 @@ def run_ga(initial_population, objective_function, evolution_mechanism, end_cond
             for index, scenario in enumerate(scenario_list)
         ]
 
-        data_df = data_df.append(data_list)
+        # data_df = data_df.append(data_list)
+        data_df = pd.concat([data_df, pd.DataFrame(data_list)], ignore_index=True)
+
 
         data_df.to_csv(log_file)
         
