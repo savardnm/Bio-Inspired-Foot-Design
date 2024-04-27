@@ -86,7 +86,7 @@ def duplicate_objects(sim, object_list, offset=[0, 0, 0], offset_frame=None):
 
 def scale_object(sim, object_handle, scale):
     print('handle:', object_handle, '\nscale:', scale)
-    sim.scaleObject(object_handle, float(scale[0]), float(scale[1]), float(scale[2]))
+    sim.scaleObject(object_handle, scale[0], scale[1], scale[2])
     
 
 def move_object(sim, object_handle, offset, frame=None):
@@ -95,6 +95,8 @@ def move_object(sim, object_handle, offset, frame=None):
 
     starting_pos = sim.getObjectPosition(object_handle, frame)
     ending_pos = (np.array(starting_pos) + np.array(offset)).tolist()
+
+    print("moving", object_handle,"from",starting_pos,"to", ending_pos)
 
     sim.setObjectPosition(object_handle, ending_pos, frame)
 
