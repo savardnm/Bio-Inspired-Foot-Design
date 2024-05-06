@@ -7,7 +7,7 @@ from evolution import *
 
 import pandas as pd
 
-def run_ga(initial_population, objective_function, evolution_mechanism, end_condition, log_file="/home/nathan/Documents/GitHub/Bio-Inspired-Foot-Design/results/csv/ga_results.csv"):
+def run_ga(initial_population, objective_function, evolution_mechanism, end_condition, log_file):
     population = initial_population
 
     generation = 0

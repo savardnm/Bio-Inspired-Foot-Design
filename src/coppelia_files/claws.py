@@ -12,6 +12,7 @@ Louse_Pad = '/home/nathan/Programs/CoppeliaSim/CoppeliaSim_Edu_V4_6_0_rev18_Ubun
 Louse_Pad_Strong = '/home/nathan/Programs/CoppeliaSim/CoppeliaSim_Edu_V4_6_0_rev18_Ubuntu20_04/models/stickbug/claws/Louse-Pad-Strong.ttm'
 Louse_Pad_Weak = '/home/nathan/Programs/CoppeliaSim/CoppeliaSim_Edu_V4_6_0_rev18_Ubuntu20_04/models/stickbug/claws/Louse-Pad-Weak.ttm'
 Louse_Pad_Script = '/home/nathan/Programs/CoppeliaSim/CoppeliaSim_Edu_V4_6_0_rev18_Ubuntu20_04/models/stickbug/claws/Louse-Pad-Script.ttm'
+Louse_Pad_Script_Extended = '/home/nathan/Programs/CoppeliaSim/CoppeliaSim_Edu_V4_6_0_rev18_Ubuntu20_04/models/stickbug/claws/Louse-Pad-Script-Extended.ttm'
 
 all_claws = [Basic_Prismatic,Basic_Revolute,Finger_Flex, Finger_Flex_Strong, Finger_Flex_Weak, Finger_Rigid,Hook,Louse_Flex,Louse_Rigid, Louse_Pad, Louse_Pad_Strong, Louse_Pad_Weak]
 bio_claws = [Finger_Flex, Finger_Flex_Strong, Finger_Flex_Weak, Louse_Pad, Louse_Pad_Strong, Louse_Pad_Weak]

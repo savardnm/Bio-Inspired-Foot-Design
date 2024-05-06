@@ -1,3 +1,5 @@
+
+
 rigid_pole_scene_5cm = '/home/nathan/Programs/CoppeliaSim/CoppeliaSim_Edu_V4_6_0_rev18_Ubuntu20_04/scenes/stickbug/05-Pole-P.ttt'
 flex_pole_scene_5cm = '/home/nathan/Programs/CoppeliaSim/CoppeliaSim_Edu_V4_6_0_rev18_Ubuntu20_04/scenes/stickbug/05-Pole-PY.ttt'
 

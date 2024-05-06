@@ -33,7 +33,8 @@ def batch_claw_test(scenario_list, max_processes=6):
     with multiprocessing.Pool(
         max_processes, initializer=init_process, initargs=initializer_args
     ) as p:
-        results = p.map(run_scenario_dict, scenario_list)
+        # results = p.map(run_scenario_dict, scenario_list)
+        results = list(map(run_scenario_dict, scenario_list))
 
     return results
     # for scenario in scenario_list:
@@ -50,7 +51,7 @@ def run_scenario(
     *args,
     **coppelia_kwargs,
 ):
-    startup_lock.acquire()
+    # startup_lock.acquire()
 
     port = find_free_port()
     coppelia_kwargs["port"] = port
@@ -62,7 +63,7 @@ def run_scenario(
 
     sim.setInt32Parameter(sim.intparam_dynamic_engine, sim.physics_newton)
     
-    startup_lock.release()
+    # startup_lock.release()
     
     attachment_point = sim.getObject(":/AttachmentPoint")  # find attachment point
 
@@ -136,18 +137,29 @@ async def handle_louse_options(
     script_handle,
     num_pad_units=None,
     pad_strength=None,
+    pad_starting_pos=0,
+    curvature=None,
+    scale=None,
     claw_torque=None,
     *args,
     **kwargs,
 ):
-    if num_pad_units is not None:
-        call_script_function(sim, "set_pad_size", script_handle, num_pad_units)
-
     if pad_strength is not None:
         call_script_function(sim, "set_pad_strength", script_handle, *pad_strength)
 
+    if num_pad_units is not None:
+        sim.callScriptFunction("set_pad_size", script_handle, num_pad_units, pad_starting_pos)
+
+    if curvature is not None:
+        call_script_function(sim, "set_curvature", script_handle, curvature)
+
+    if scale is not None:
+        call_script_function(sim, "set_link_scale", script_handle, scale)
+
     if claw_torque is not None:
         sim.callScriptFunction("set_claw_torques", script_handle, claw_torque)
+
+    
 
 
 def handle_finger_options(

@@ -1,6 +1,6 @@
 from typing import Any
 import numpy as np
-from ga.utilities import map_range
+from ga.utilities import map_range, extract_gene
 
 from ga.ga import run_ga
 from pprint import pprint
@@ -18,7 +18,7 @@ from zmq_claw_test import batch_claw_test
 
 
 def initialize_population(population_size, population_range):
-    initial_population = np.uint8(map_range(np.random.rand(population_size), *population_range))
+    initial_population = np.uint32(map_range(np.random.rand(population_size), *population_range))
 
     return initial_population
 
@@ -34,9 +34,11 @@ class GripStrengthObjective:
         return batch_claw_test(map(self.binary_to_scenario, binary_population), self.max_processes)
 
     def binary_to_scenario(self, binary):
-        num_pad_units = int(binary & np.uint8(0b111))
+        # num_pad_units = int(binary & np.uint8(0b111))
+        num_pad_units = int(extract_gene(binary, 0,2))
         
-        pad_strength = (binary & np.uint8(0b11111000)) >> 3
+        # pad_strength = (binary & np.uint8(0b11111000)) >> 3
+        pad_strength = extract_gene(binary, 3, 7)
         
         pad_strength = int(map_range(
             pad_strength,
@@ -45,13 +47,48 @@ class GripStrengthObjective:
             min_input = 0b0,
             max_input = 0b11111 
         ))
-
+        
         pad_strength = (pad_strength, 10) # use 10 as default drag value
 
+        pad_start_point_sign = extract_gene(binary, 8, 8)
+        pad_start_point_value = extract_gene(binary, 9, 9)
+
+        if pad_start_point_sign == 0:
+            pad_start_point_sign = -1
+        else:
+            pad_start_point_sign = 1
+
+        pad_start_pos = int(pad_start_point_sign * pad_start_point_value)
+
+
+        scale = extract_gene(binary, 10, 17)
+        scale = float(map_range(
+            scale,
+            min_value = 0.9,
+            max_value = 1.1,
+            min_input = 0x0,
+            max_input = 0xff
+        ))
+
+        curvature = extract_gene(binary, 18, 25)
+
+        curvature = float(map_range(
+            curvature,
+            min_value = -0.087, # +/- 5 degrees
+            max_value = 0.087,
+            min_input = 0x0,
+            max_input = 0xff
+        ))
+
+
+
         claw_scenario = {
-            "path": Louse_Pad_Script,
+            "path": Louse_Pad_Script_Extended,
             "num_pad_units": num_pad_units,
             "pad_strength": pad_strength,
+            "pad_starting_pos": pad_start_pos,
+            "curvature": curvature,
+            "scale": scale
         }
 
 
@@ -79,11 +116,11 @@ class GripStrengthObjective:
 
 
 if __name__ == '__main__':
-    population_size = 30
+    population_size = 4
 
     initial_population = initialize_population(
         population_size = population_size,
-        population_range = (0,255),
+        population_range = (0x0,0xffffffff),
     )
 
     objective_function = GripStrengthObjective(
@@ -91,15 +128,15 @@ if __name__ == '__main__':
     )
 
     crossover_mechanism = SimpleCrossover(
-        crossover_point = 5
+        crossover_point = 12
     )
 
     evolution_mechanism = LastNReplacement(
-        n_replacement = 6,
+        n_replacement = 2,
         crossover_mechanism = crossover_mechanism
     )
 
-    end_condition = MaxTrials(30)
+    end_condition = MaxTrials(6)
 
     # batch_claw_test(scenario_list, max_processes=1)
 

@@ -1,5 +1,6 @@
 from typing import Any
-from numpy import *
+from random import randint
+from numpy import uint8
 
 class Crossover:
     def __call__(self, *args: Any, **kwds: Any) -> Any:
@@ -30,7 +31,14 @@ class SimpleCrossover (Crossover):
 
         return [child_1, child_2]
 
-        
+class SingleRandomCrossover (SimpleCrossover):
+    def __init__(self, gene_size) -> None:
+        self.gene_size = gene_size
+        super().__init__(0)
+
+    def crossover(self, parent_1, parent_2):
+        self.crossover_point = randint(0, self.gene_size)
+        return super().crossover(parent_1, parent_2)
         
 class MultiCrossover (Crossover):
     def __init__(self, crossover_point_list) -> None:
