@@ -1,0 +1,1 @@
+seeminly, the edu version i downloaded does not have any plugins! and so I need to figure out how to get those... luckily the cluster is using ubuntu 20.04, so it's just a matter of properly installing it.
