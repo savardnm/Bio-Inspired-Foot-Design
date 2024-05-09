@@ -116,7 +116,7 @@ class GripStrengthObjective:
 
 
 if __name__ == '__main__':
-    population_size = 4
+    population_size = 16
 
     initial_population = initialize_population(
         population_size = population_size,
@@ -124,7 +124,7 @@ if __name__ == '__main__':
     )
 
     objective_function = GripStrengthObjective(
-        max_processes=8
+        max_processes=16
     )
 
     crossover_mechanism = SingleRandomCrossover(
@@ -132,11 +132,11 @@ if __name__ == '__main__':
     )
 
     evolution_mechanism = LastNReplacement(
-        n_replacement = 2,
+        n_replacement = 4,
         crossover_mechanism = crossover_mechanism
     )
 
-    end_condition = MaxTrials(6)
+    end_condition = MaxTrials(16)
 
     # batch_claw_test(scenario_list, max_processes=1)
 
