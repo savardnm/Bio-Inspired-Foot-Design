@@ -35,10 +35,10 @@ class GripStrengthObjective:
 
     def binary_to_scenario(self, binary):
         # num_pad_units = int(binary & np.uint8(0b111))
-        num_pad_units = int(extract_gene(binary, 0,2))
+        num_pad_units = int(extract_gene(binary, 0,3))
         
         # pad_strength = (binary & np.uint8(0b11111000)) >> 3
-        pad_strength = extract_gene(binary, 3, 7)
+        pad_strength = extract_gene(binary, 3, 8)
         
         pad_strength = int(map_range(
             pad_strength,
@@ -50,8 +50,8 @@ class GripStrengthObjective:
         
         pad_strength = (pad_strength, 10) # use 10 as default drag value
 
-        pad_start_point_sign = extract_gene(binary, 8, 8)
-        pad_start_point_value = extract_gene(binary, 9, 9)
+        pad_start_point_sign = extract_gene(binary, 8, 9)
+        pad_start_point_value = extract_gene(binary, 9, 10)
 
         if pad_start_point_sign == 0:
             pad_start_point_sign = -1
@@ -61,7 +61,7 @@ class GripStrengthObjective:
         pad_start_pos = int(pad_start_point_sign * pad_start_point_value)
 
 
-        scale = extract_gene(binary, 10, 17)
+        scale = extract_gene(binary, 10, 18)
         scale = float(map_range(
             scale,
             min_value = 0.9,
@@ -70,7 +70,7 @@ class GripStrengthObjective:
             max_input = 0xff
         ))
 
-        curvature = extract_gene(binary, 18, 25)
+        curvature = extract_gene(binary, 18, 26)
 
         curvature = float(map_range(
             curvature,
