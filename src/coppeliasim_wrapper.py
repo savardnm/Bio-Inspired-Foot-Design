@@ -67,7 +67,7 @@ def get_flags(
         flags.append("-q")
 
     if headless:
-        flags.append("-h")
+        flags.append("-H")
 
     if num_timesteps != None:
         flags.append("-s" + str(int(num_timesteps)))
