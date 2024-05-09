@@ -15,6 +15,9 @@ def run_ga(initial_population, objective_function, evolution_mechanism, end_cond
         'generation':[],
         'num_pad_units':[],
         'pad_strength':[],
+        "pad_starting_pos":[],
+        "curvature":[],
+        "scale":[],
         'result':[],
     })
 
@@ -33,6 +36,9 @@ def run_ga(initial_population, objective_function, evolution_mechanism, end_cond
                 'generation': int(generation),
                 'num_pad_units': scenario['claw_scenario']['num_pad_units'],
                 'pad_strength': scenario['claw_scenario']['pad_strength'][0],
+                'pad_starting_pos':scenario['claw_scenario']['pad_starting_pos'],
+                'curvature':scenario['claw_scenario']['curvature'],
+                'scale':scenario['claw_scenario']['scale'],
                 'result': population_results[index],
             }
             for index, scenario in enumerate(scenario_list)

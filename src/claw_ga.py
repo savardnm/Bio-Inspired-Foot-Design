@@ -127,8 +127,8 @@ if __name__ == '__main__':
         max_processes=8
     )
 
-    crossover_mechanism = SimpleCrossover(
-        crossover_point = 12
+    crossover_mechanism = SingleRandomCrossover(
+        gene_size=25
     )
 
     evolution_mechanism = LastNReplacement(
