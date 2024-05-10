@@ -1,5 +1,5 @@
 from typing import Any
-from random import randint
+from random import randint, shuffle
 from numpy import uint8
 
 class Crossover:

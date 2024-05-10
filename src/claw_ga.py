@@ -117,25 +117,27 @@ class GripStrengthObjective:
 
 if __name__ == '__main__':
     population_size = 16
+    gene_size=25
 
     initial_population = initialize_population(
         population_size = population_size,
         population_range = (0x0,0xffffffff),
     )
 
-    initial_population = population_from_csv("/home/nathan/Documents/GitHub/Bio-Inspired-Foot-Design/results/csv/ga_results_complex.csv")
+    # initial_population = population_from_csv("/home/nathan/Documents/GitHub/Bio-Inspired-Foot-Design/results/csv/ga_results_complex.csv")
 
     objective_function = GripStrengthObjective(
         max_processes=16
     )
 
     crossover_mechanism = SingleRandomCrossover(
-        gene_size=25
+        gene_size=gene_size
     )
 
     evolution_mechanism = LastNReplacement(
         n_replacement = 4,
-        crossover_mechanism = crossover_mechanism
+        crossover_mechanism = crossover_mechanism,
+        mutation_mechanism = RandomMutation(mutation_probability=0.03, gene_size=gene_size)
     )
 
     end_condition = MaxTrials(16)
