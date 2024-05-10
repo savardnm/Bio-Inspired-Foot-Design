@@ -8,14 +8,14 @@ class Mutation:
         return list(map(self.mutate, generation))
 
 
-class NoMutation:
+class NoMutation (Mutation):
     def __init__(self) -> None:
         pass
 
     def mutate(self, individual):
         return individual
     
-class RandomMutation:
+class RandomMutation (Mutation):
     def __init__(self, mutation_probability, gene_size) -> None:
         self.gene_size = gene_size
         self.mutation_probability = mutation_probability
