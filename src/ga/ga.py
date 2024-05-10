@@ -19,6 +19,7 @@ def run_ga(initial_population, objective_function, evolution_mechanism, end_cond
         "curvature":[],
         "scale":[],
         'result':[],
+        'binary':[],
     })
 
 
@@ -40,6 +41,7 @@ def run_ga(initial_population, objective_function, evolution_mechanism, end_cond
                 'curvature':scenario['claw_scenario']['curvature'],
                 'scale':scenario['claw_scenario']['scale'],
                 'result': population_results[index],
+                'binary': population[index],
             }
             for index, scenario in enumerate(scenario_list)
         ]
@@ -55,3 +57,10 @@ def run_ga(initial_population, objective_function, evolution_mechanism, end_cond
         generation += 1
 
 
+
+def population_from_csv(csv_file):
+    df = pd.read_csv(csv_file)
+    last_generation = max(df["generation"].unique())
+    last_generation_df = df[df["generation"].isin([last_generation])]
+    population = list(last_generation['binary'])
+    return population

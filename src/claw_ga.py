@@ -2,7 +2,7 @@ from typing import Any
 import numpy as np
 from ga.utilities import map_range, extract_gene
 
-from ga.ga import run_ga
+from ga.ga import run_ga, population_from_csv
 from pprint import pprint
 
 from ga.crossover import *
@@ -122,6 +122,8 @@ if __name__ == '__main__':
         population_size = population_size,
         population_range = (0x0,0xffffffff),
     )
+
+    initial_population = population_from_csv("/home/nathan/Documents/GitHub/Bio-Inspired-Foot-Design/results/csv/ga_results_complex.csv")
 
     objective_function = GripStrengthObjective(
         max_processes=16
