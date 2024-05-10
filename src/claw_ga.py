@@ -124,7 +124,7 @@ if __name__ == '__main__':
         population_range = (0x0,0xffffffff),
     )
 
-    # initial_population = population_from_csv("/home/nathan/Documents/GitHub/Bio-Inspired-Foot-Design/results/csv/ga_results_complex.csv")
+    initial_population = population_from_csv("/home/nathan/Documents/GitHub/Bio-Inspired-Foot-Design/results/csv/ga_results_complex.csv")
 
     objective_function = GripStrengthObjective(
         max_processes=population_size

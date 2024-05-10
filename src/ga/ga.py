@@ -62,5 +62,5 @@ def population_from_csv(csv_file):
     df = pd.read_csv(csv_file)
     last_generation = max(df["generation"].unique())
     last_generation_df = df[df["generation"].isin([last_generation])]
-    population = list(last_generation_df['binary'])
+    population = list(np.uint32(list(last_generation_df['binary'])))
     return population
