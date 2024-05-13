@@ -116,7 +116,10 @@ def variable_filter_df(df, data_list, label_list, variable_filter_list, label=""
     for option in option_list:
 
         # print('criteria: ', option)
-        new_label = label + "\n" + str(option)
+        if int(option) % 5 == 0:
+            new_label = str(int(option))
+        else:
+            new_label = ''
 
         option_filter = {column: option}
 
@@ -337,5 +340,5 @@ def match_values(df, **criteria):
 
 
 if __name__ == "__main__":
-    results_dir = "/home/nathan/Documents/GitHub/Bio-Inspired-Foot-Design/results/csv/ga_results_complex_7-gen.csv"
+    results_dir = "/home/nathan/Documents/GitHub/Bio-Inspired-Foot-Design/results/csv/ga_results_simplified.csv"
     analyze(results_dir)
