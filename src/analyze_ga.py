@@ -54,6 +54,36 @@ def compare_generations(df):
         y_axis_title="Pad Strength",
         value_column="pad_strength",
     )
+    
+    multi_boxplot(
+        df,
+        constant_filter,
+        variable_filter_list,
+        title="Pad Starting Point of Generations",
+        x_axis_title="Generation",
+        y_axis_title="Starting Point",
+        value_column="pad_starting_pos",
+    )
+
+    multi_boxplot(
+        df,
+        constant_filter,
+        variable_filter_list,
+        title="Curvature Across Generations",
+        x_axis_title="Generation",
+        y_axis_title="Curvature",
+        value_column="curvature",
+    )
+
+    multi_boxplot(
+        df,
+        constant_filter,
+        variable_filter_list,
+        title="Scale Across Generations",
+        x_axis_title="Generation",
+        y_axis_title="Scale",
+        value_column="scale",
+    )
 
 
 
@@ -165,7 +195,7 @@ def boxplot_results(df, title, x_axis="gripper", x_axis_list="all", **criteria):
 
     labels = ["\n".join(label.split("-")) for label in labels]
     ax.set_xticklabels(labels)
-    bp = ax.boxplot(data, showfliers=False, showmeans=True, meanline=True)
+    bp = ax.boxplot(data, showfliers=True, showmeans=True, meanline=True)
 
 
 def boxplot(title, labels, data, x_axis_title="", y_axis_title=""):
@@ -176,7 +206,7 @@ def boxplot(title, labels, data, x_axis_title="", y_axis_title=""):
     ax.set_xticklabels(labels, rotation="vertical")
     plt.xlabel(x_axis_title)
     plt.ylabel(y_axis_title)
-    bp = ax.boxplot(data, showfliers=False, showmeans=True)
+    bp = ax.boxplot(data, showfliers=True, showmeans=True)
 
 
 # def compare_scenes(df):
@@ -340,5 +370,5 @@ def match_values(df, **criteria):
 
 
 if __name__ == "__main__":
-    results_dir = "/home/nathan/Documents/GitHub/Bio-Inspired-Foot-Design/results/csv/ga_results_simplified.csv"
+    results_dir = "/home/nathan/Documents/GitHub/Bio-Inspired-Foot-Design/results/csv/ga_results_complex.csv"
     analyze(results_dir)

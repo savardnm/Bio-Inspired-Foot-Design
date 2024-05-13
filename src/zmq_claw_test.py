@@ -6,6 +6,7 @@ import asyncio
 import os
 import sys
 from pprint import pprint
+from copy import deepcopy
 
 from coppeliasim_utils import *
 from coppeliasim_wrapper import run_coppeliasim
@@ -26,7 +27,7 @@ def init_process(lock):
     startup_lock = lock
 
 
-def batch_claw_test(scenario_list, max_processes=6):
+def batch_claw_test(scenario_list, max_processes=6, vary_actuator=False):
     startup_lock = multiprocessing.Lock()
     initializer_args = (startup_lock,)
 
