@@ -34,13 +34,34 @@ def batch_claw_test(scenario_list, max_processes=6, vary_actuator=False):
     with multiprocessing.Pool(
         max_processes, initializer=init_process, initargs=initializer_args
     ) as p:
-        # results = p.map(run_scenario_dict, scenario_list)
-        results = list(map(run_scenario_dict, scenario_list))
+        if vary_actuator:
+            scenario_list = create_double_scenario_list(scenario_list)
 
-    return results
+            all_results = list(p.map(run_scenario_dict, scenario_list))
+
+            num_scenarios = len(scenario_list)
+            results1 = all_results[0:num_scenarios]
+            results2 = all_results[num_scenarios:]
+
+            return results1, results2
+        
+        else:
+            results = list(p.map(run_scenario_dict, scenario_list))
+            # results = list(map(run_scenario_dict, scenario_list))
+            return results
     # for scenario in scenario_list:
     #     run_scenario_dict(scenario)
 
+def create_double_scenario_list(scenario_list):
+    vertical_scenarios = deepcopy(scenario_list)
+    for scenario in vertical_scenarios:
+        scenario['actuator']['name'] = "VerticalForce"
+
+    horizontal_scenarios = deepcopy(scenario_list)
+    for scenario in horizontal_scenarios:
+        scenario['actuator']['name'] = "HorizontalForce"
+
+    return vertical_scenarios + horizontal_scenarios
 
 def run_scenario_dict(scenario_dict):
     return run_scenario(**scenario_dict)
@@ -52,7 +73,7 @@ def run_scenario(
     *args,
     **coppelia_kwargs,
 ):
-    # startup_lock.acquire()
+    startup_lock.acquire()
 
     port = find_free_port()
     coppelia_kwargs["port"] = port
@@ -64,7 +85,7 @@ def run_scenario(
 
     sim.setInt32Parameter(sim.intparam_dynamic_engine, sim.physics_newton)
     
-    # startup_lock.release()
+    startup_lock.release()
     
     attachment_point = sim.getObject(":/AttachmentPoint")  # find attachment point
 

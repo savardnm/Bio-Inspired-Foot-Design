@@ -26,7 +26,7 @@ def run_ga(initial_population, objective_function, evolution_mechanism, end_cond
     while not end_condition():
         print("===================\ngeneration: ", population)
 
-        population_results = objective_function(population)
+        population_results1, population_results2 = objective_function(population)
 
         print("results: ", population_results)
 
@@ -40,7 +40,9 @@ def run_ga(initial_population, objective_function, evolution_mechanism, end_cond
                 'pad_starting_pos':scenario['claw_scenario']['pad_starting_pos'],
                 'curvature':scenario['claw_scenario']['curvature'],
                 'scale':scenario['claw_scenario']['scale'],
-                'result': population_results[index],
+                'vertical_result': population_results1[index],
+                'horizontal_result': population_results2[index],
+                'result': (population_results1[index] + population_results2[index]) / 2.0,
                 'binary': population[index],
             }
             for index, scenario in enumerate(scenario_list)

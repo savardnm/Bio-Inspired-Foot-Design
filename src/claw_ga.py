@@ -31,7 +31,7 @@ class GripStrengthObjective:
         return self.evaluate_population(*args, **kwds)
 
     def evaluate_population(self, binary_population):
-        return batch_claw_test(map(self.binary_to_scenario, binary_population), self.max_processes)
+        return batch_claw_test(list(map(self.binary_to_scenario, binary_population)), self.max_processes, vary_actuator=True)
 
     def binary_to_scenario(self, binary):
         # num_pad_units = int(binary & np.uint8(0b111))
@@ -124,7 +124,7 @@ if __name__ == '__main__':
         population_range = (0x0,0xffffffff),
     )
 
-    initial_population = population_from_csv("/home/nathan/Documents/GitHub/Bio-Inspired-Foot-Design/results/csv/ga_results_complex.csv")
+    # initial_population = population_from_csv("/home/nathan/Documents/GitHub/Bio-Inspired-Foot-Design/results/csv/ga_results_complex.csv")
 
     objective_function = GripStrengthObjective(
         max_processes=population_size
