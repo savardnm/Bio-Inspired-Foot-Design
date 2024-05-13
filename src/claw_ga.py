@@ -116,7 +116,7 @@ class GripStrengthObjective:
 
 
 if __name__ == '__main__':
-    population_size = 40
+    population_size = 10
     gene_size=25
 
     initial_population = initialize_population(
@@ -140,7 +140,7 @@ if __name__ == '__main__':
         mutation_mechanism = RandomMutation(mutation_probability=0.03, gene_size=gene_size)
     )
 
-    end_condition = MaxTrials(20)
+    end_condition = MaxTrials(10)
 
     # batch_claw_test(scenario_list, max_processes=1)
 
