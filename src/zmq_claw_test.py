@@ -84,8 +84,8 @@ def run_scenario(
     coppelia_thread = threading.Thread(target=run_coppeliasim, kwargs=coppelia_kwargs)
     coppelia_thread.start()
 
+    print("*", end="", flush=True)
     sim = connect_to_api(port)  # will block until loaded
-    print("*", end="")
 
     sim.setInt32Parameter(sim.intparam_dynamic_engine, sim.physics_newton)
 
@@ -118,7 +118,7 @@ def run_scenario(
         actuator.sensor_loop()
         sim.step()
 
-    print("@", end="")
+    print("@", end="", flush=True)
 
     return actuator_force
 

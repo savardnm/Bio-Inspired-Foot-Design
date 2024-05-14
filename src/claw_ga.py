@@ -116,7 +116,7 @@ class GripStrengthObjective:
 
 
 if __name__ == '__main__':
-    population_size = 100
+    population_size = 10
     gene_size=100
 
     initial_population = initialize_population(
@@ -135,7 +135,7 @@ if __name__ == '__main__':
     )
 
     evolution_mechanism = LastNReplacement(
-        n_replacement = 10,
+        n_replacement = 2,
         crossover_mechanism = crossover_mechanism,
         mutation_mechanism = RandomMutation(mutation_probability=0.03, gene_size=gene_size)
     )
