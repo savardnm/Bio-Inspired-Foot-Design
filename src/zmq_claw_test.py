@@ -38,8 +38,8 @@ def batch_claw_test(scenario_list, max_processes=6, vary_actuator=False):
             num_scenarios = len(scenario_list)
             scenario_list = create_double_scenario_list(scenario_list)
 
-            all_results = list(p.map(run_scenario_dict, scenario_list))
-            # all_results = list(map(run_scenario_dict, scenario_list))
+            # all_results = list(p.map(run_scenario_dict, scenario_list))
+            all_results = list(map(run_scenario_dict, scenario_list))
 
             results1 = all_results[0:num_scenarios]
             results2 = all_results[num_scenarios:]
@@ -47,8 +47,8 @@ def batch_claw_test(scenario_list, max_processes=6, vary_actuator=False):
             return results1, results2
         
         else:
-            results = list(p.map(run_scenario_dict, scenario_list))
-            # results = list(map(run_scenario_dict, scenario_list))
+            # results = list(p.map(run_scenario_dict, scenario_list))
+            results = list(map(run_scenario_dict, scenario_list))
             print("")
             return results
     # for scenario in scenario_list:
