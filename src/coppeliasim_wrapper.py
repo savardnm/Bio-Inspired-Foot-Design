@@ -45,8 +45,6 @@ def run_coppeliasim(target="sh", **params):
 
     command_array = command + flags
 
-    # print(">", *command_array)
-
     result = subprocess.run(command_array, check=True, stdout=subprocess.PIPE)
 
     return result

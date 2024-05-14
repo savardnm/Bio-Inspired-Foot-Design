@@ -35,11 +35,12 @@ def batch_claw_test(scenario_list, max_processes=6, vary_actuator=False):
         max_processes, initializer=init_process, initargs=initializer_args
     ) as p:
         if vary_actuator:
+            num_scenarios = len(scenario_list)
             scenario_list = create_double_scenario_list(scenario_list)
 
             all_results = list(p.map(run_scenario_dict, scenario_list))
+            # all_results = list(map(run_scenario_dict, scenario_list))
 
-            num_scenarios = len(scenario_list)
             results1 = all_results[0:num_scenarios]
             results2 = all_results[num_scenarios:]
 
@@ -75,16 +76,18 @@ def run_scenario(
 ):
     startup_lock.acquire()
 
-    port = find_free_port()
+    # port = find_free_port()
+    port = random.randint(24000, 29999)
     coppelia_kwargs["port"] = port
     coppelia_kwargs["num_timesteps"] = 10e5
     coppelia_thread = threading.Thread(target=run_coppeliasim, kwargs=coppelia_kwargs)
     coppelia_thread.start()
 
     sim = connect_to_api(port)  # will block until loaded
+    print("connection_successful")
 
     sim.setInt32Parameter(sim.intparam_dynamic_engine, sim.physics_newton)
-    
+
     startup_lock.release()
     
     attachment_point = sim.getObject(":/AttachmentPoint")  # find attachment point

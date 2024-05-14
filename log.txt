@@ -1,0 +1,121 @@
+port 37831
+wrapper ['/home/nathan/Programs/CoppeliaSim/CoppeliaSim_Edu_V4_6_0_rev18_Ubuntu20_04/coppeliaSim.sh', '-q', '-H', '-s1000000', '/home/nathan/Programs/CoppeliaSim/CoppeliaSim_Edu_V4_6_0_rev18_Ubuntu20_04/scenes/stickbug/05-Pole-PY.ttt', '-GzmqRemoteApi.rpcPort=37831']
+launched 37831
+searching 37831
+client 37831
+library ['/home/nathan/Programs/CoppeliaSim/CoppeliaSim_Edu_V4_6_0_rev18_Ubuntu20_04/python/pythonLauncher.py', 'tcp://127.0.0.1:23276']
+sim 37831
+connected 37831
+port 45973
+wrapper ['/home/nathan/Programs/CoppeliaSim/CoppeliaSim_Edu_V4_6_0_rev18_Ubuntu20_04/coppeliaSim.sh', '-q', '-H', '-s1000000', '/home/nathan/Programs/CoppeliaSim/CoppeliaSim_Edu_V4_6_0_rev18_Ubuntu20_04/scenes/stickbug/05-Pole-PY.ttt', '-GzmqRemoteApi.rpcPort=45973']
+launched 45973
+searching 45973
+client 45973
+library ['/home/nathan/Programs/CoppeliaSim/CoppeliaSim_Edu_V4_6_0_rev18_Ubuntu20_04/python/pythonLauncher.py', 'tcp://127.0.0.1:23278']
+library ['/home/nathan/Programs/CoppeliaSim/CoppeliaSim_Edu_V4_6_0_rev18_Ubuntu20_04/python/pythonLauncher.py', 'tcp://127.0.0.1:23280']
+sim 45973
+connected 45973
+port 43301
+launched 43301
+searching 43301
+wrapper ['/home/nathan/Programs/CoppeliaSim/CoppeliaSim_Edu_V4_6_0_rev18_Ubuntu20_04/coppeliaSim.sh', '-q', '-H', '-s1000000', '/home/nathan/Programs/CoppeliaSim/CoppeliaSim_Edu_V4_6_0_rev18_Ubuntu20_04/scenes/stickbug/05-Pole-PY.ttt', '-GzmqRemoteApi.rpcPort=43301']
+client 43301
+library ['/home/nathan/Programs/CoppeliaSim/CoppeliaSim_Edu_V4_6_0_rev18_Ubuntu20_04/python/pythonLauncher.py', 'tcp://127.0.0.1:23282']
+sim 43301
+connected 43301
+port 53797
+wrapper ['/home/nathan/Programs/CoppeliaSim/CoppeliaSim_Edu_V4_6_0_rev18_Ubuntu20_04/coppeliaSim.sh', '-q', '-H', '-s1000000', '/home/nathan/Programs/CoppeliaSim/CoppeliaSim_Edu_V4_6_0_rev18_Ubuntu20_04/scenes/stickbug/05-Pole-PY.ttt', '-GzmqRemoteApi.rpcPort=53797']
+launched 53797
+searching 53797
+client 53797
+library ['/home/nathan/Programs/CoppeliaSim/CoppeliaSim_Edu_V4_6_0_rev18_Ubuntu20_04/python/pythonLauncher.py', 'tcp://127.0.0.1:23284']
+library ['/home/nathan/Programs/CoppeliaSim/CoppeliaSim_Edu_V4_6_0_rev18_Ubuntu20_04/python/pythonLauncher.py', 'tcp://127.0.0.1:23286']
+sim 53797
+connected 53797
+library ['/home/nathan/Programs/CoppeliaSim/CoppeliaSim_Edu_V4_6_0_rev18_Ubuntu20_04/python/pythonLauncher.py', 'tcp://127.0.0.1:23288']
+port 37743
+wrapper ['/home/nathan/Programs/CoppeliaSim/CoppeliaSim_Edu_V4_6_0_rev18_Ubuntu20_04/coppeliaSim.sh', '-q', '-H', '-s1000000', '/home/nathan/Programs/CoppeliaSim/CoppeliaSim_Edu_V4_6_0_rev18_Ubuntu20_04/scenes/stickbug/05-Pole-PY.ttt', '-GzmqRemoteApi.rpcPort=37743']
+launched 37743
+searching 37743
+client 37743
+library ['/home/nathan/Programs/CoppeliaSim/CoppeliaSim_Edu_V4_6_0_rev18_Ubuntu20_04/python/pythonLauncher.py', 'tcp://127.0.0.1:23278']
+after wrapper ['/home/nathan/Programs/CoppeliaSim/CoppeliaSim_Edu_V4_6_0_rev18_Ubuntu20_04/coppeliaSim.sh', '-q', '-H', '-s1000000', '/home/nathan/Programs/CoppeliaSim/CoppeliaSim_Edu_V4_6_0_rev18_Ubuntu20_04/scenes/stickbug/05-Pole-PY.ttt', '-GzmqRemoteApi.rpcPort=37831']
+sim 37743
+connected 37743
+library ['/home/nathan/Programs/CoppeliaSim/CoppeliaSim_Edu_V4_6_0_rev18_Ubuntu20_04/python/pythonLauncher.py', 'tcp://127.0.0.1:23276']
+port 52421
+launched 52421
+searching 52421
+client 52421
+wrapper ['/home/nathan/Programs/CoppeliaSim/CoppeliaSim_Edu_V4_6_0_rev18_Ubuntu20_04/coppeliaSim.sh', '-q', '-H', '-s1000000', '/home/nathan/Programs/CoppeliaSim/CoppeliaSim_Edu_V4_6_0_rev18_Ubuntu20_04/scenes/stickbug/05-Pole-PY.ttt', '-GzmqRemoteApi.rpcPort=52421']
+library ['/home/nathan/Programs/CoppeliaSim/CoppeliaSim_Edu_V4_6_0_rev18_Ubuntu20_04/python/pythonLauncher.py', 'tcp://127.0.0.1:23284']
+after wrapper ['/home/nathan/Programs/CoppeliaSim/CoppeliaSim_Edu_V4_6_0_rev18_Ubuntu20_04/coppeliaSim.sh', '-q', '-H', '-s1000000', '/home/nathan/Programs/CoppeliaSim/CoppeliaSim_Edu_V4_6_0_rev18_Ubuntu20_04/scenes/stickbug/05-Pole-PY.ttt', '-GzmqRemoteApi.rpcPort=43301']
+after wrapper ['/home/nathan/Programs/CoppeliaSim/CoppeliaSim_Edu_V4_6_0_rev18_Ubuntu20_04/coppeliaSim.sh', '-q', '-H', '-s1000000', '/home/nathan/Programs/CoppeliaSim/CoppeliaSim_Edu_V4_6_0_rev18_Ubuntu20_04/scenes/stickbug/05-Pole-PY.ttt', '-GzmqRemoteApi.rpcPort=37743']
+sim 52421
+connected 52421
+port 37213
+wrapper ['/home/nathan/Programs/CoppeliaSim/CoppeliaSim_Edu_V4_6_0_rev18_Ubuntu20_04/coppeliaSim.sh', '-q', '-H', '-s1000000', '/home/nathan/Programs/CoppeliaSim/CoppeliaSim_Edu_V4_6_0_rev18_Ubuntu20_04/scenes/stickbug/05-Pole-PY.ttt', '-GzmqRemoteApi.rpcPort=37213']
+launched 37213
+searching 37213
+client 37213
+library ['/home/nathan/Programs/CoppeliaSim/CoppeliaSim_Edu_V4_6_0_rev18_Ubuntu20_04/python/pythonLauncher.py', 'tcp://127.0.0.1:23276']
+library ['/home/nathan/Programs/CoppeliaSim/CoppeliaSim_Edu_V4_6_0_rev18_Ubuntu20_04/python/pythonLauncher.py', 'tcp://127.0.0.1:23278']
+sim 37213
+connected 37213
+port 49707
+launched 49707
+searching 49707
+client 49707
+wrapper ['/home/nathan/Programs/CoppeliaSim/CoppeliaSim_Edu_V4_6_0_rev18_Ubuntu20_04/coppeliaSim.sh', '-q', '-H', '-s1000000', '/home/nathan/Programs/CoppeliaSim/CoppeliaSim_Edu_V4_6_0_rev18_Ubuntu20_04/scenes/stickbug/05-Pole-PY.ttt', '-GzmqRemoteApi.rpcPort=49707']
+library ['/home/nathan/Programs/CoppeliaSim/CoppeliaSim_Edu_V4_6_0_rev18_Ubuntu20_04/python/pythonLauncher.py', 'tcp://127.0.0.1:23282']
+library ['/home/nathan/Programs/CoppeliaSim/CoppeliaSim_Edu_V4_6_0_rev18_Ubuntu20_04/python/pythonLauncher.py', 'tcp://127.0.0.1:23290']
+after wrapper ['/home/nathan/Programs/CoppeliaSim/CoppeliaSim_Edu_V4_6_0_rev18_Ubuntu20_04/coppeliaSim.sh', '-q', '-H', '-s1000000', '/home/nathan/Programs/CoppeliaSim/CoppeliaSim_Edu_V4_6_0_rev18_Ubuntu20_04/scenes/stickbug/05-Pole-PY.ttt', '-GzmqRemoteApi.rpcPort=45973']
+sim 49707
+connected 49707
+library ['/home/nathan/Programs/CoppeliaSim/CoppeliaSim_Edu_V4_6_0_rev18_Ubuntu20_04/python/pythonLauncher.py', 'tcp://127.0.0.1:23280']
+after wrapper ['/home/nathan/Programs/CoppeliaSim/CoppeliaSim_Edu_V4_6_0_rev18_Ubuntu20_04/coppeliaSim.sh', '-q', '-H', '-s1000000', '/home/nathan/Programs/CoppeliaSim/CoppeliaSim_Edu_V4_6_0_rev18_Ubuntu20_04/scenes/stickbug/05-Pole-PY.ttt', '-GzmqRemoteApi.rpcPort=52421']
+after wrapper ['/home/nathan/Programs/CoppeliaSim/CoppeliaSim_Edu_V4_6_0_rev18_Ubuntu20_04/coppeliaSim.sh', '-q', '-H', '-s1000000', '/home/nathan/Programs/CoppeliaSim/CoppeliaSim_Edu_V4_6_0_rev18_Ubuntu20_04/scenes/stickbug/05-Pole-PY.ttt', '-GzmqRemoteApi.rpcPort=37213']
+after wrapper ['/home/nathan/Programs/CoppeliaSim/CoppeliaSim_Edu_V4_6_0_rev18_Ubuntu20_04/coppeliaSim.sh', '-q', '-H', '-s1000000', '/home/nathan/Programs/CoppeliaSim/CoppeliaSim_Edu_V4_6_0_rev18_Ubuntu20_04/scenes/stickbug/05-Pole-PY.ttt', '-GzmqRemoteApi.rpcPort=49707']
+port 43635
+wrapper ['/home/nathan/Programs/CoppeliaSim/CoppeliaSim_Edu_V4_6_0_rev18_Ubuntu20_04/coppeliaSim.sh', '-q', '-H', '-s1000000', '/home/nathan/Programs/CoppeliaSim/CoppeliaSim_Edu_V4_6_0_rev18_Ubuntu20_04/scenes/stickbug/05-Pole-PY.ttt', '-GzmqRemoteApi.rpcPort=43635']
+launched 43635
+searching 43635
+client 43635
+library ['/home/nathan/Programs/CoppeliaSim/CoppeliaSim_Edu_V4_6_0_rev18_Ubuntu20_04/python/pythonLauncher.py', 'tcp://127.0.0.1:23276']
+sim 43635
+connected 43635
+port 43039
+wrapper ['/home/nathan/Programs/CoppeliaSim/CoppeliaSim_Edu_V4_6_0_rev18_Ubuntu20_04/coppeliaSim.sh', '-q', '-H', '-s1000000', '/home/nathan/Programs/CoppeliaSim/CoppeliaSim_Edu_V4_6_0_rev18_Ubuntu20_04/scenes/stickbug/05-Pole-PY.ttt', '-GzmqRemoteApi.rpcPort=43039']
+launched 43039
+searching 43039
+client 43039
+library ['/home/nathan/Programs/CoppeliaSim/CoppeliaSim_Edu_V4_6_0_rev18_Ubuntu20_04/python/pythonLauncher.py', 'tcp://127.0.0.1:23278']
+new tcp://127.0.0.1:56571
+library ['/home/nathan/Programs/CoppeliaSim/CoppeliaSim_Edu_V4_6_0_rev18_Ubuntu20_04/python/pythonLauncher.py', 'tcp://127.0.0.1:23279']
+1
+2
+1
+2
+3
+1
+2
+3
+1
+2
+3
+1
+2
+3
+1
+2
+3
+1
+2
+1
+2
+3
+1
+2
+3
+1
+2

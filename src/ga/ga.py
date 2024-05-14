@@ -28,7 +28,7 @@ def run_ga(initial_population, objective_function, evolution_mechanism, end_cond
 
         population_results1, population_results2 = objective_function(population)
 
-        print("results: ", population_results)
+        print("results: ", population_results1, population_results2)
 
         scenario_list = map(objective_function.binary_to_scenario, population)
 
@@ -54,7 +54,7 @@ def run_ga(initial_population, objective_function, evolution_mechanism, end_cond
 
         data_df.to_csv(log_file)
         
-        population = evolution_mechanism(population, list(population_results))
+        population = evolution_mechanism(population, [scenario['result'] for scenario in data_list])
 
         generation += 1
 

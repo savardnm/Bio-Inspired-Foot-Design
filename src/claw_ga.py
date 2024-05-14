@@ -135,7 +135,7 @@ if __name__ == '__main__':
     )
 
     evolution_mechanism = LastNReplacement(
-        n_replacement = 4,
+        n_replacement = 2,
         crossover_mechanism = crossover_mechanism,
         mutation_mechanism = RandomMutation(mutation_probability=0.03, gene_size=gene_size)
     )
