@@ -64,8 +64,8 @@ class GripStrengthObjective:
         scale = extract_gene(binary, 10, 18)
         scale = float(map_range(
             scale,
-            min_value = 0.9,
-            max_value = 1.1,
+            min_value = 0.8,
+            max_value = 1.2,
             min_input = 0x0,
             max_input = 0xff
         ))
@@ -74,8 +74,8 @@ class GripStrengthObjective:
 
         curvature = float(map_range(
             curvature,
-            min_value = -0.087, # +/- 5 degrees
-            max_value = 0.087,
+            min_value = -0.175, # +/- 10 degrees
+            max_value = 0.175,
             min_input = 0x0,
             max_input = 0xff
         ))
@@ -116,8 +116,8 @@ class GripStrengthObjective:
 
 
 if __name__ == '__main__':
-    population_size = 10
-    gene_size=25
+    population_size = 100
+    gene_size=100
 
     initial_population = initialize_population(
         population_size = population_size,
@@ -135,7 +135,7 @@ if __name__ == '__main__':
     )
 
     evolution_mechanism = LastNReplacement(
-        n_replacement = 2,
+        n_replacement = 10,
         crossover_mechanism = crossover_mechanism,
         mutation_mechanism = RandomMutation(mutation_probability=0.03, gene_size=gene_size)
     )
