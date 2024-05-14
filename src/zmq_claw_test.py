@@ -49,6 +49,7 @@ def batch_claw_test(scenario_list, max_processes=6, vary_actuator=False):
         else:
             results = list(p.map(run_scenario_dict, scenario_list))
             # results = list(map(run_scenario_dict, scenario_list))
+            print("")
             return results
     # for scenario in scenario_list:
     #     run_scenario_dict(scenario)
@@ -84,7 +85,7 @@ def run_scenario(
     coppelia_thread.start()
 
     sim = connect_to_api(port)  # will block until loaded
-    print("connection_successful")
+    print("*", end="")
 
     sim.setInt32Parameter(sim.intparam_dynamic_engine, sim.physics_newton)
 
@@ -116,6 +117,8 @@ def run_scenario(
         actuator_force = actuator.actuation_loop()
         actuator.sensor_loop()
         sim.step()
+
+    print("@", end="")
 
     return actuator_force
 

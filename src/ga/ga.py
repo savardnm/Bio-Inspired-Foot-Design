@@ -42,7 +42,7 @@ def run_ga(initial_population, objective_function, evolution_mechanism, end_cond
                 'scale':scenario['claw_scenario']['scale'],
                 'vertical_result': population_results1[index],
                 'horizontal_result': population_results2[index],
-                'result': (population_results1[index] + population_results2[index]) / 2.0,
+                'result': (population_results1[index] * population_results2[index]),
                 'binary': population[index],
             }
             for index, scenario in enumerate(scenario_list)
