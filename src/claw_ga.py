@@ -1,6 +1,8 @@
 from typing import Any
 import numpy as np
 from ga.utilities import map_range, extract_gene
+from datetime import datetime
+
 
 from ga.ga import run_ga, population_from_csv
 from pprint import pprint
@@ -117,7 +119,7 @@ class GripStrengthObjective:
 
 if __name__ == '__main__':
     population_size = 100
-    gene_size=100
+    gene_size=25
 
     initial_population = initialize_population(
         population_size = population_size,
@@ -144,12 +146,15 @@ if __name__ == '__main__':
 
     # batch_claw_test(scenario_list, max_processes=1)
 
+    date_string = datetime.now().strftime("%m:%d:%Y:%H:%M:%S")
+
+
     run_ga(
         initial_population = initial_population,
         objective_function = objective_function,
         evolution_mechanism = evolution_mechanism,
         end_condition = end_condition,
-        log_file="/home/nathan/Documents/GitHub/Bio-Inspired-Foot-Design/results/csv/ga_results_complex.csv"
+        log_file="/home/nathan/Documents/GitHub/Bio-Inspired-Foot-Design/results/csv/ga_results_complex"+date_string+".csv"
         )
 
     

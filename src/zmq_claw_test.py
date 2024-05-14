@@ -77,14 +77,14 @@ def run_scenario(
 ):
     startup_lock.acquire()
 
-    # port = find_free_port()
-    port = random.randint(24000, 29999)
+    port = find_free_port()
     coppelia_kwargs["port"] = port
     coppelia_kwargs["num_timesteps"] = 10e5
     coppelia_thread = threading.Thread(target=run_coppeliasim, kwargs=coppelia_kwargs)
     coppelia_thread.start()
 
     print("*", end="", flush=True)
+
     sim = connect_to_api(port)  # will block until loaded
 
     sim.setInt32Parameter(sim.intparam_dynamic_engine, sim.physics_newton)
@@ -117,8 +117,6 @@ def run_scenario(
         actuator_force = actuator.actuation_loop()
         actuator.sensor_loop()
         sim.step()
-
-    print("@", end="", flush=True)
 
     return actuator_force
 
