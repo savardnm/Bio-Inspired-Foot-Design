@@ -23,7 +23,7 @@ def compare_grippers(df):
     compare_horizontal(df)
 
 
-def boxplot_results(df, title, gripper_list = "all", **criteria):
+def boxplot_results(df, title, x_axis_title, y_axis_title, gripper_list = "all", **criteria):
     filtered_df = filter_df(df, **criteria)
     
     if gripper_list == "all":
@@ -37,16 +37,23 @@ def boxplot_results(df, title, gripper_list = "all", **criteria):
         labels.append(gripper)
         data.append(results)
 
-    fig = plt.figure(figsize=(9, 7))
-    ax = fig.add_axes([0.1, 0.15, 0.8, 0.8], label="gripper")
+    fig = plt.figure(figsize=(6, 4))
+    ax = fig.add_axes([0.15, 0.25, 0.75, 0.65], label="gripper")
     plt.title(title)
+    plt.xlabel(x_axis_title)
+    plt.ylabel(y_axis_title)
 
-    labels = ["\n".join(label.split("-")) for label in labels]
+    labels = readable_labels(labels)
     ax.set_xticklabels(labels, rotation="vertical")
     # plt.xticks([], labels, rotation='vertical')
     bp = ax.boxplot(data, showfliers=False)
 
-
+def readable_labels(original_label_list):
+    return [original_label\
+        .replace("Basic-Prismatic", "Basic\nPrismatic\nClaw")\
+        .replace("Basic-Revolute", "Basic\nRevolute\nClaw")\
+        .replace("Finger-Flex", "Finger\nClaw")\
+        .replace("Louse-Pad", "Louse\nClaw") for original_label in original_label_list]
 
 def compare_weights(df):
     compare_finger_weights(df)
@@ -57,6 +64,8 @@ def compare_finger_weights(df):
     boxplot_results(
         df,
         title="Effect of Compliance on Finger Actuator",
+        x_axis_title="Gripper Compliance $(\\frac{Nm}{rad})$",
+        y_axis_title="Grip Strength (N)",
         gripper=["Finger-Rigid", "Finger-Flex-Weak", "Finger-Flex", "Finger-Flex-Strong", ],
         applied_force=["VerticalForce"],
         scene=["05-Pole-PY"],
@@ -67,6 +76,8 @@ def compare_louse_weights(df):
     boxplot_results(
         df,
         title="Effect of Compliance on Louse Actuator",
+        x_axis_title="Gripper Compliance $(\\frac{N}{m})$",
+        y_axis_title="Grip Strength (N)",
         gripper=["Louse-Rigid", "Louse-Pad-Weak", "Louse-Pad", "Louse-Pad-Strong", ],
         applied_force=["VerticalForce"],
         scene=["05-Pole-PY"],
@@ -75,7 +86,9 @@ def compare_louse_weights(df):
 def compare_vertical(df):
     boxplot_results(
         df,
-        title="Gripper Vertical Performance",
+        title="Gripper Shear Grip Strength",
+        x_axis_title="Gripper Type",
+        y_axis_title="Grip Strength (N)",
         gripper_list = [
             "Basic-Prismatic",
             "Basic-Revolute",
@@ -90,7 +103,9 @@ def compare_vertical(df):
 def compare_horizontal(df):
     boxplot_results(
         df,
-        title="Gripper Horizontal Performance",
+        title="Gripper Normal Grip Strength",
+        x_axis_title="Gripper Type",
+        y_axis_title="Grip Strength (N)",
         applied_force="HorizontalForce",
         gripper_list = [
             "Basic-Prismatic",
