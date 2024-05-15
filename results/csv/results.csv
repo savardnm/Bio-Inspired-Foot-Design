@@ -567,6 +567,7 @@ scene,num_pad_units,pad_strength,applied_force,result,flex_strength,gripper
 05-Pole-PY,6,15,VerticalForce,2429.83,-1,Louse-Pad-Script
 05-Pole-PY,6,15,VerticalForce,2291.38,-1,Louse-Pad-Script
 05-Pole-PY,6,15,VerticalForce,2390.19,-1,Louse-Pad-Script
+05-Pole-PY,6,15,VerticalForce,5426.77,-1,Louse-Pad-Script
 05-Pole-P,4,405,HorizontalForce,450.29,-1,Louse-Pad-Script
 05-Pole-P,4,405,HorizontalForce,251.11,-1,Louse-Pad-Script
 05-Pole-P,4,405,HorizontalForce,374.07,-1,Louse-Pad-Script
@@ -662,6 +663,7 @@ scene,num_pad_units,pad_strength,applied_force,result,flex_strength,gripper
 05-Pole-PY,6,30,HorizontalForce,4506.14,-1,Louse-Pad-Script
 05-Pole-PY,6,30,HorizontalForce,4469.05,-1,Louse-Pad-Script
 05-Pole-PY,6,30,HorizontalForce,4450.59,-1,Louse-Pad-Script
+05-Pole-PY,6,30,HorizontalForce,9035.93,-1,Louse-Pad-Script
 05-Pole-PY,4,810,HorizontalForce,343.31,-1,Louse-Pad-Script
 05-Pole-PY,4,810,HorizontalForce,380.85,-1,Louse-Pad-Script
 05-Pole-PY,4,810,HorizontalForce,278.63,-1,Louse-Pad-Script
@@ -1611,6 +1613,7 @@ scene,num_pad_units,pad_strength,applied_force,result,flex_strength,gripper
 05-Pole-PY,6,30,VerticalForce,2344.96,-1,Louse-Pad-Script
 05-Pole-PY,6,30,VerticalForce,2408.44,-1,Louse-Pad-Script
 05-Pole-PY,6,30,VerticalForce,2491.61,-1,Louse-Pad-Script
+05-Pole-PY,6,30,VerticalForce,4670.86,-1,Louse-Pad-Script
 05-Pole-PY,4,5,HorizontalForce,1450.31,-1,Louse-Pad-Script
 05-Pole-PY,4,5,HorizontalForce,943.83,-1,Louse-Pad-Script
 05-Pole-PY,4,5,HorizontalForce,1065.68,-1,Louse-Pad-Script

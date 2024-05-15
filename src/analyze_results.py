@@ -15,7 +15,7 @@ def analyze(results_dir):
     results_df = results_to_df(results_dir)
     # print(results_df)
     print("all results >>>>\n", results_df.to_string(), "\nall results <<<<")
-    df_to_csv(results_df, results_dir + "csv/results.csv", overwrite=True)
+    # df_to_csv(results_df, results_dir + "csv/results.csv", overwrite=True)
     compare_louse_3d(results_df)
     compare_finger_flex_effect(results_df)
     compare_louse_flex_effect(results_df)
@@ -421,8 +421,10 @@ def average_trials(df):
 def average_over_values(df, **criteria):
     # print("averaging over values: ", criteria)
     df_filtered = filter_df(df=df, **criteria)
-    mean_series = df_filtered.mean()
-    return mean_series["result"]
+    print("===//\n", df_filtered, "\n//===")
+    # mean_series = df_filtered.mean()
+    # return mean_series["result"]
+    return df_filtered['result'].mean()
 
 
 def filter_df(df, **criteria):
