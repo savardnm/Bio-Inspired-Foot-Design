@@ -79,10 +79,7 @@ def compare_vertical(df):
         gripper_list = [
             "Basic-Prismatic",
             "Basic-Revolute",
-            "Finger-Rigid",
             "Finger-Flex",
-            "Louse-Rigid",
-            "Louse-Flex",
             "Louse-Pad",
         ],
         applied_force="VerticalForce",
@@ -98,10 +95,7 @@ def compare_horizontal(df):
         gripper_list = [
             "Basic-Prismatic",
             "Basic-Revolute",
-            "Finger-Rigid",
             "Finger-Flex",
-            "Louse-Rigid",
-            "Louse-Flex",
             "Louse-Pad",
         ],
         scene="05-Pole-PY",
