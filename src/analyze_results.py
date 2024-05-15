@@ -44,7 +44,7 @@ def boxplot_results(df, title, gripper_list = "all", **criteria):
     labels = ["\n".join(label.split("-")) for label in labels]
     ax.set_xticklabels(labels, rotation="vertical")
     # plt.xticks([], labels, rotation='vertical')
-    bp = ax.boxplot(data)
+    bp = ax.boxplot(data, showfliers=False)
 
 
 
