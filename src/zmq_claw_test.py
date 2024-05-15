@@ -66,7 +66,10 @@ def create_double_scenario_list(scenario_list):
     return vertical_scenarios + horizontal_scenarios
 
 def run_scenario_dict(scenario_dict):
-    return run_scenario(**scenario_dict)
+    try:
+        return run_scenario(**scenario_dict)
+    except:
+        return 0
 
 
 def run_scenario(
