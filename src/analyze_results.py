@@ -31,11 +31,17 @@ def boxplot_results(df, title, x_axis_title, y_axis_title, gripper_list = "all",
 
     labels = []
     data = []
+
+    print("=======================")
+    print(title, ":")
     for gripper in gripper_list:
         gripper_df = filter_df(filtered_df, gripper=gripper)
         results = gripper_df["result"]
         labels.append(gripper)
         data.append(results)
+
+        print(gripper, ":")
+        print("(", results.mean(), results.std(), ")")
 
     fig = plt.figure(figsize=(6, 4))
     ax = fig.add_axes([0.15, 0.25, 0.75, 0.65], label="gripper")
