@@ -126,10 +126,10 @@ if __name__ == '__main__':
         population_range = (0x0,0xffffffff),
     )
 
-    initial_population = population_from_csv("/home/nathan/Documents/GitHub/Bio-Inspired-Foot-Design/results/csv/ga_results_complex05:15:2024:21:11:46.csv")
+    initial_population = population_from_csv("/home/nathan/Documents/GitHub/Bio-Inspired-Foot-Design/results/csv/ga_results_complex05:16:2024:13:59:13.csv")
 
     objective_function = GripStrengthObjective(
-        max_processes=12
+        max_processes=16
     )
 
     crossover_mechanism = SingleRandomCrossover(
