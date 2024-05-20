@@ -1,0 +1,26 @@
+last chapter:
+
+what does this tell us compared to previous investigation
+
+look at starting point of pad
+
+point: what is the similarity/sense of outcome - meaning of outcome.
+
+list how many parameter
+
+discuss:
+compare our ga to real lice solution
+what can be compared between. does our simulation explain
+why does it "focus" on one area.
+
+point: start with bio
+develop one example
+implement technicals
+ML to optimize technical
+connect back to bio
+how close of a solution do we reach to connect back
+
+comparison table --> compare grippers (compare bio vs trad)
+other related gripper work. somehow need to connect to other reseach. find other grippers.
+ex "gripper A requires many actuators" or gripper B requires suction
+compare to other state of the art. why is ours needed in the existing space
