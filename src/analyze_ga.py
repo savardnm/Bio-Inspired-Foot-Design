@@ -17,32 +17,35 @@ def analyze(results_dir):
 
     compare_generations(results_df)
 
+    compare_distributions(results_df)
+
     plt.show()
+
 
 def compare_generations(df):
     constant_filter = {}
-    
+
     variable_filter_list = [
-        ('generation', 'all'),
+        ("generation", "all"),
     ]
-    
+
     multi_boxplot(
         df,
         constant_filter,
         variable_filter_list,
         title="Performance of Generations",
         x_axis_title="Generation",
-        y_axis_title="Grip Strength",
+        y_axis_title="Gripper Performance $(N^2)$",
     )
-    
+
     multi_boxplot(
         df,
         constant_filter,
         variable_filter_list,
         title="Shear Performance of Generations",
         x_axis_title="Generation",
-        y_axis_title="Grip Strength",
-        value_column="vertical_result"
+        y_axis_title="Grip Strength $(N)$",
+        value_column="vertical_result",
     )
 
     multi_boxplot(
@@ -51,10 +54,10 @@ def compare_generations(df):
         variable_filter_list,
         title="Normal Performance of Generations",
         x_axis_title="Generation",
-        y_axis_title="Grip Strength",
-        value_column="horizontal_result"
+        y_axis_title="Grip Strength $(N)$",
+        value_column="horizontal_result",
     )
-    
+
     multi_boxplot(
         df,
         constant_filter,
@@ -64,7 +67,7 @@ def compare_generations(df):
         y_axis_title="Pad Size",
         value_column="num_pad_units",
     )
-    
+
     multi_boxplot(
         df,
         constant_filter,
@@ -74,7 +77,7 @@ def compare_generations(df):
         y_axis_title="Pad Strength",
         value_column="pad_strength",
     )
-    
+
     multi_boxplot(
         df,
         constant_filter,
@@ -106,17 +109,71 @@ def compare_generations(df):
     )
 
 
+def compare_distributions(df):
+    scatter("pad_strength", "num_pad_units", df,
+            title="Distribution of Pad Size vs Pad Strength in Last Generation",
+            x_axis_title="Pad Strength $(N/m)$",
+            y_axis_title="Pad Size (Number of Pad Units)",
+            condense=True)
+
+
+def scatter(x_axis, y_axis, df, title, x_axis_title, y_axis_title, condense=False):
+    last_generation = df.iloc[-1]["generation"]
+    last_generation_df = df[df["generation"].isin([last_generation])]
+    x_axis_data = last_generation_df[x_axis]
+    y_axis_data = last_generation_df[y_axis]
+
+    fig = plt.figure(figsize=(9, 7))
+    ax = fig.add_axes([0.1, 0.15, 0.8, 0.75])
+    plt.title(title)
+    plt.xlabel(x_axis_title)
+    plt.ylabel(y_axis_title)
+
+    if condense:
+        x_y_value_list = last_generation_df.groupby([x_axis, y_axis])
+
+        x_axis_data = []
+        y_axis_data = []
+        size_data = []
+
+        for name, group in x_y_value_list:
+            x_axis_data.append(name[0])
+            y_axis_data.append(name[1])
+            size_data.append(len(group.index) * 20.0)
+            print(f"Group: {name}")
+            print(group)
+            print()
+
+        plt.scatter(x_axis_data, y_axis_data, s=size_data)
+    else:
+        plt.scatter(x_axis_data, y_axis_data)
+
+def get_unique_pairs(df, *axi):
+    df.groupby(*axi)
+
 
 
 def multi_boxplot(
-    df, constant_filter, variable_filter_list, title, x_axis_title="", y_axis_title="", value_column="result"
+    df,
+    constant_filter,
+    variable_filter_list,
+    title,
+    x_axis_title="",
+    y_axis_title="",
+    value_column="result",
 ):
     constant_filter_df = filter_df(df, **constant_filter)
 
     label_list = []
     data_list = []
 
-    variable_filter_df(constant_filter_df, data_list, label_list, variable_filter_list, value_column=value_column)
+    variable_filter_df(
+        constant_filter_df,
+        data_list,
+        label_list,
+        variable_filter_list,
+        value_column=value_column,
+    )
 
     # print("!", data_list, "\n\n", label_list)
 
@@ -140,7 +197,9 @@ def format_label(label):
     )
 
 
-def variable_filter_df(df, data_list, label_list, variable_filter_list, label="", value_column="result"):
+def variable_filter_df(
+    df, data_list, label_list, variable_filter_list, label="", value_column="result"
+):
     if not variable_filter_list:
         print("found value column: ", value_column, ": ", df[value_column])
         data_list.append(df[value_column])
@@ -150,16 +209,13 @@ def variable_filter_df(df, data_list, label_list, variable_filter_list, label=""
     variable_filter_list = deepcopy(variable_filter_list)
     column, option_list = variable_filter_list.pop(0)
 
-
     if option_list == "all":
         option_list = df[column].unique()
-
 
     try:
         option_list = sorted(option_list, key=lambda opt: int(opt))
     except:
         pass
-
 
     # print('all criteria', column, option_list)
 
@@ -169,7 +225,7 @@ def variable_filter_df(df, data_list, label_list, variable_filter_list, label=""
         if int(option) % 5 == 0:
             new_label = str(int(option))
         else:
-            new_label = ''
+            new_label = ""
 
         option_filter = {column: option}
 
@@ -178,7 +234,12 @@ def variable_filter_df(df, data_list, label_list, variable_filter_list, label=""
         # print('criteria filtered', filtered_df)
 
         variable_filter_df(
-            filtered_df, data_list, label_list, variable_filter_list, new_label, value_column=value_column
+            filtered_df,
+            data_list,
+            label_list,
+            variable_filter_list,
+            new_label,
+            value_column=value_column,
         )
 
 
@@ -219,7 +280,7 @@ def boxplot_results(df, title, x_axis="gripper", x_axis_list="all", **criteria):
 
 
 def boxplot(title, labels, data, x_axis_title="", y_axis_title=""):
-    fig = plt.figure(figsize=(9, 7))
+    fig = plt.figure(figsize=(10, 4))
     ax = fig.add_axes([0.1, 0.15, 0.8, 0.75])
     plt.title(title)
 
@@ -228,36 +289,15 @@ def boxplot(title, labels, data, x_axis_title="", y_axis_title=""):
     plt.ylabel(y_axis_title)
     bp = ax.boxplot(data, showfliers=True, showmeans=True)
 
+    plots_dir = "/home/nathan/Documents/GitHub/Bio-Inspired-Foot-Design/results/Plots/"
+
+    plt.savefig(plots_dir + title + '.png')
+
+
 
 # def compare_scenes(df):
 #     compare_horizontal_scenes(df)
 #     compare_vertical_scenes(df)
-
-
-def compare_horizontal_scenes(df):
-    boxplot_results(
-        df,
-        title="Effect of Pitch Flex on Horizontal Grip Strength",
-        x_axis="scene",
-        gripper=[
-            "Finger-Flex-Script",
-            "Louse-Pad-Script",
-        ],
-        applied_force=["HorizontalForce"],
-    )
-
-
-def compare_vertical_scenes(df):
-    boxplot_results(
-        df,
-        title="Effect of Pitch Flex on Vertical Grip Strength",
-        x_axis="scene",
-        gripper=[
-            "Finger-Flex-Script",
-            "Louse-Pad-Script",
-        ],
-        applied_force=["VerticalForce"],
-    )
 
 
 def compare_weights(df):
@@ -366,7 +406,7 @@ def filter_df(df, **criteria):
     if criteria == {}:
         print("no criteria")
         return df
-    
+
     return df[match_values(df, **criteria)]
 
 

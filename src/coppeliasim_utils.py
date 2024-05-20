@@ -2,7 +2,7 @@ from coppeliasim_zmqremoteapi_client import RemoteAPIClient
 import numpy as np
 
 def is_stopped(sim):
-    return (sim.getSimulationState() == sim.simulation_stopped) or (sim.getSimulationState() = sim.simulation_paused)
+    return (sim.getSimulationState() == sim.simulation_stopped) or (sim.getSimulationState() == sim.simulation_paused)
 
 def step(sim):
     if sim.getSimulationState() != sim.simulation_stopped:
