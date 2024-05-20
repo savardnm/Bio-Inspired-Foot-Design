@@ -39,6 +39,26 @@ def compare_generations(df):
         df,
         constant_filter,
         variable_filter_list,
+        title="Shear Performance of Generations",
+        x_axis_title="Generation",
+        y_axis_title="Grip Strength",
+        value_column="vertical_result"
+    )
+
+    multi_boxplot(
+        df,
+        constant_filter,
+        variable_filter_list,
+        title="Normal Performance of Generations",
+        x_axis_title="Generation",
+        y_axis_title="Grip Strength",
+        value_column="horizontal_result"
+    )
+    
+    multi_boxplot(
+        df,
+        constant_filter,
+        variable_filter_list,
         title="Pad Size of Generations",
         x_axis_title="Generation",
         y_axis_title="Pad Size",
@@ -370,5 +390,5 @@ def match_values(df, **criteria):
 
 
 if __name__ == "__main__":
-    results_dir = "/home/nathan/Documents/GitHub/Bio-Inspired-Foot-Design/results/csv/ga_results_complex.csv"
+    results_dir = "/home/nathan/Documents/GitHub/Bio-Inspired-Foot-Design/results/csv/ga_results_100x100.csv"
     analyze(results_dir)
