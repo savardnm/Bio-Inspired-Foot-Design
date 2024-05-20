@@ -126,10 +126,10 @@ if __name__ == '__main__':
         population_range = (0x0,0xffffffff),
     )
 
-    initial_population = population_from_csv("/home/nathan/Documents/GitHub/Bio-Inspired-Foot-Design/results/csv/ga_results_complex05:16:2024:13:59:13.csv")
+    # initial_population = population_from_csv("/home/nathan/Documents/GitHub/Bio-Inspired-Foot-Design/results/csv/ga_results_complex05:16:2024:13:59:13.csv")
 
     objective_function = GripStrengthObjective(
-        max_processes=16
+        max_processes=32
     )
 
     crossover_mechanism = SingleRandomCrossover(
@@ -154,7 +154,7 @@ if __name__ == '__main__':
         objective_function = objective_function,
         evolution_mechanism = evolution_mechanism,
         end_condition = end_condition,
-        log_file="/home/nathan/Documents/GitHub/Bio-Inspired-Foot-Design/results/csv/ga_results_complex"+date_string+".csv"
+        log_file="/home/nathan/Documents/GitHub/Bio-Inspired-Foot-Design/results/csv/ga_results_redo_"+date_string+".csv"
         )
 
     
