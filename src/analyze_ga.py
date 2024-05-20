@@ -32,7 +32,7 @@ def compare_generations(df):
         variable_filter_list,
         title="Performance of Generations",
         x_axis_title="Generation",
-        y_axis_title="Grip Strength",
+        y_axis_title="Grip Strength $(N)$",
     )
     
     multi_boxplot(
@@ -41,7 +41,7 @@ def compare_generations(df):
         variable_filter_list,
         title="Pad Size of Generations",
         x_axis_title="Generation",
-        y_axis_title="Pad Size",
+        y_axis_title="Pad Size (Number of Units)",
         value_column="num_pad_units",
     )
     
@@ -51,7 +51,7 @@ def compare_generations(df):
         variable_filter_list,
         title="Pad Strength of Generations",
         x_axis_title="Generation",
-        y_axis_title="Pad Strength",
+        y_axis_title="Pad Strength $(N/m)$",
         value_column="pad_strength",
     )
 
@@ -116,7 +116,7 @@ def variable_filter_df(df, data_list, label_list, variable_filter_list, label=""
     for option in option_list:
 
         # print('criteria: ', option)
-        new_label = label + "\n" + str(option)
+        new_label = str(int(option))
 
         option_filter = {column: option}
 
@@ -128,45 +128,8 @@ def variable_filter_df(df, data_list, label_list, variable_filter_list, label=""
             filtered_df, data_list, label_list, variable_filter_list, new_label, value_column=value_column
         )
 
-
-def boxplot_results(df, title, x_axis="gripper", x_axis_list="all", **criteria):
-    filtered_df = filter_df(df, **criteria)
-
-    if x_axis == "gripper":
-        if x_axis_list == "all":
-            x_axis_list = filtered_df["gripper"].unique()
-
-        labels = []
-        data = []
-        for gripper in x_axis_list:
-            gripper_df = filter_df(filtered_df, gripper=gripper)
-            results = gripper_df["result"]
-            labels.append(gripper)
-            data.append(results)
-
-    if x_axis == "scene":
-        if x_axis_list == "all":
-            x_axis_list = filtered_df["scene"].unique()
-
-        labels = []
-        data = []
-        for scene in x_axis_list:
-            scene_df = filter_df(filtered_df, scene=scene)
-            results = scene_df["result"]
-            labels.append(scene)
-            data.append(results)
-
-    fig = plt.figure(figsize=(9, 7))
-    ax = fig.add_axes([0.1, 0.25, 0.8, 0.75], label="gripper")
-    plt.title(title)
-
-    labels = ["\n".join(label.split("-")) for label in labels]
-    ax.set_xticklabels(labels)
-    bp = ax.boxplot(data, showfliers=False, showmeans=True, meanline=True)
-
-
 def boxplot(title, labels, data, x_axis_title="", y_axis_title=""):
-    fig = plt.figure(figsize=(9, 7))
+    fig = plt.figure(figsize=(9, 4))
     ax = fig.add_axes([0.1, 0.15, 0.8, 0.75])
     plt.title(title)
 
@@ -176,36 +139,13 @@ def boxplot(title, labels, data, x_axis_title="", y_axis_title=""):
     bp = ax.boxplot(data, showfliers=False, showmeans=True)
 
 
+    plot_dir = "/home/nathan/Documents/GitHub/Bio-Inspired-Foot-Design/results/Plots/"
+    plt.savefig(plot_dir + "Reduced_" + title + '.png')
+
+
 # def compare_scenes(df):
 #     compare_horizontal_scenes(df)
 #     compare_vertical_scenes(df)
-
-
-def compare_horizontal_scenes(df):
-    boxplot_results(
-        df,
-        title="Effect of Pitch Flex on Horizontal Grip Strength",
-        x_axis="scene",
-        gripper=[
-            "Finger-Flex-Script",
-            "Louse-Pad-Script",
-        ],
-        applied_force=["HorizontalForce"],
-    )
-
-
-def compare_vertical_scenes(df):
-    boxplot_results(
-        df,
-        title="Effect of Pitch Flex on Vertical Grip Strength",
-        x_axis="scene",
-        gripper=[
-            "Finger-Flex-Script",
-            "Louse-Pad-Script",
-        ],
-        applied_force=["VerticalForce"],
-    )
-
 
 def compare_weights(df):
     compare_finger_weights(df)
