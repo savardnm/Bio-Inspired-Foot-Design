@@ -114,6 +114,9 @@ def run_scenario(
 
     while not is_stopped(sim):
         t = sim.getSimulationTime()
+        if t > 2000: # timeout broken sims
+            return  0
+
         # print(
         #     f"Simulation time: {t:.2f} [s] (simulation running synchronously to client, i.e. stepped)"
         # )
