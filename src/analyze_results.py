@@ -59,7 +59,7 @@ def compare_scenes(df):
             variable_filter_list,
             title="Effect of Y Axis Wrist Flex" + " " + format_label(force_option),
             x_axis_title="Scenario",
-            y_axis_title="Grip Strength",
+            y_axis_title="Grip Strength (N)",
         )
 
 def force_boxplot_series(
@@ -108,7 +108,7 @@ def compare_louse_flex_effect(df):
         gripper="Louse-Pad-Script",
         constant_filter=constant_filter,
         variable_name="pad_strength",
-        base_title="Effect of Flex Values on Louse Gripper",
+        base_title="Effect of Flex Values on Hook-Claw Gripper",
         x_axis_title="Pad Stiffness (N/m)",
         y_axis_title="Grip Force (N)",
     )
@@ -122,7 +122,7 @@ def compare_louse_pad_size_effect(df):
         gripper="Louse-Pad-Script",
         constant_filter=constant_filter,
         variable_name="num_pad_units",
-        base_title="Effect of Pad Size on Louse Gripper",
+        base_title="Effect of Pad Size on Hook-Claw Gripper",
         x_axis_title="Pad Size (Units)",
         y_axis_title="Grip Force (N)",
     )
@@ -133,7 +133,7 @@ def compare_finger_flex_effect(df):
         df,
         gripper="Finger-Flex-Script",
         variable_name="flex_strength",
-        base_title="Effect of Flex Values on Finger Gripper",
+        base_title="Effect of Flex Values on Finger-Claw Gripper",
         x_axis_title="Palm Flex Stiffness (Nm/rad)",
         y_axis_title="Grip Force (N)",
     )
@@ -154,8 +154,8 @@ def compare_louse_3d(df):
 
     num_pad_values = sorted(num_pad_values, key=lambda opt: int(opt))
     pad_str_values = sorted(pad_str_values, key=lambda opt: int(opt))
-    pad_str_values = pad_str_values[0:-2]
-    num_pad_values = num_pad_values[1:]
+    # pad_str_values = pad_str_values[0:-2]
+    # num_pad_values = num_pad_values[1:]
 
     str_average_list = [
         average_over_values(df, pad_strength=pad_strength, num_pad_units=num_pad_units)
@@ -175,6 +175,11 @@ def compare_louse_3d(df):
     ax.set_xlabel("Pad Size (Number of Units)")
     ax.set_ylabel("Pad Stiffness (N/m)")
     ax.set_zlabel("Grip Force (N)")
+    ax.view_init(elev=25., azim=-135.)
+
+
+    title = "Combined Effect of Pad Size and Pad Stiffness on Grip Strength"
+    plt.title(title)
 
     surf = ax.plot_surface(
         np.array(num_pad_values),
@@ -184,6 +189,8 @@ def compare_louse_3d(df):
         rstride=1,
         cstride=1,
     )
+
+    save_fig(title)
 
 
 def multi_boxplot(
@@ -282,14 +289,20 @@ def boxplot_results(df, title, x_axis="gripper", x_axis_list="all", **criteria):
 
 
 def boxplot(title, labels, data, x_axis_title="", y_axis_title=""):
-    fig = plt.figure(figsize=(9, 7))
-    ax = fig.add_axes([0.1, 0.15, 0.8, 0.75])
+    fig = plt.figure(figsize=(6, 4))
+    ax = fig.add_axes([0.15, 0.25, 0.75, 0.65])
     plt.title(title)
 
     ax.set_xticklabels(labels, rotation="vertical")
     plt.xlabel(x_axis_title)
     plt.ylabel(y_axis_title)
     bp = ax.boxplot(data, showfliers=False, showmeans=True)
+
+    save_fig(title)
+
+def save_fig(title):
+    plots_dir = "/home/nathan/Documents/GitHub/Bio-Inspired-Foot-Design/results/Plots/"
+    plt.savefig(plots_dir + title + ".png")
 
 
 # def compare_scenes(df):
