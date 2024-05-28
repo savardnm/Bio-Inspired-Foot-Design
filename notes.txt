@@ -1,3 +1,18 @@
+Questions
+What is our research question?
+- Investigate Lice Claws as a viable source of bio inspiration (start with lice, expand)
+- Use embodied intelligence as a guiding principle of mech design (embodied int --> bio insp --> lice)
+
+focus on: EmAI, Lice, Bio-insp, ML?
+
+Do we 'select one gripper' or is it pre-selected by lice inspiration target
+i.e. is lice our main focus, or is it a 'coincidence'?
+
+How much should I discuss the stick insect? Just as background, or should I put a section ~contract with a diagram of the proposed insect combo
+
+
+
+--------------
 last chapter:
 
 what does this tell us compared to previous investigation
