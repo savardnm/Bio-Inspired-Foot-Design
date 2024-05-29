@@ -1,0 +1,58 @@
+
+
+two options:
+
+1. surface adhesion (Soft materials)
+2. Intelocking -- create a locking feature
+
+
+Describe grip strength to avoid confusion
+
+Questions
+What is our research question?
+- Investigate Lice Claws as a viable source of bio inspiration (start with lice, expand)
+- Use embodied intelligence as a guiding principle of mech design (embodied int --> bio insp --> lice) ** smoother for thesis - embAI in principle can improve in robot behaviors. animal morphologies = embodied --> animals --> lice
+
+focus on: EmAI, Lice, Bio-insp, ML?
+
+Do we 'select one gripper' or is it pre-selected by lice inspiration target
+i.e. is lice our main focus, or is it a 'coincidence'?
+
+use p-test between performance before optimization (show that figure a - shear - is ambiguous (p > 0.05) and b is decisive (p < 0.05),) so that we should use louse claw for further investigation
+
+GA is optimization of physics --> optimize embodied I
+
+
+How much should I discuss the stick insect? Just as background, or should I put a section ~contract with a diagram of the proposed insect combo
+
+into discussion --> application of future work
+
+
+
+--------------
+last chapter:
+
+what does this tell us compared to previous investigation
+
+look at starting point of pad
+
+point: what is the similarity/sense of outcome - meaning of outcome.
+
+list how many parameter
+
+discuss:
+compare our ga to real lice solution
+what can be compared between. does our simulation explain
+why does it "focus" on one area.
+
+point: start with bio
+develop one example
+implement technicals
+ML to optimize technical
+connect back to bio
+how close of a solution do we reach to connect back
+
+comparison table --> compare grippers (compare bio vs trad)
+other related gripper work. somehow need to connect to other reseach. find other grippers.
+ex "gripper A requires many actuators" or gripper B requires suction
+compare to other state of the art. why is ours needed in the existing space
