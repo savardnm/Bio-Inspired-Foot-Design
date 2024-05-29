@@ -64,6 +64,14 @@ def compare_generations(df):
         y_axis_title="Frequency (%)",
     )
 
+    histogram(
+        "num_pad_units",
+        df,
+        title="Distribution of Pad Size in Last Generation",
+        x_axis_title="Pad Size (units)",
+        y_axis_title="Frequency (%)",
+    )
+
 
 
 
@@ -97,6 +105,13 @@ def format_label(label):
         .replace("Louse-Pad-Script", "Louse Claw")
         .replace("Finger-Flex-Script", "Finger Claw")
     )
+
+
+
+def save_plot(title):
+    plots_dir = "/home/nathan/Documents/GitHub/Bio-Inspired-Foot-Design/results/Plots/"
+
+    plt.savefig(plots_dir + title + ".png")
 
 
 def variable_filter_df(df, data_list, label_list, variable_filter_list, label="", value_column="result"):
@@ -235,7 +250,7 @@ def get_generation_df(df, generation):
     return df[df["generation"].isin([generation])]
 
 
-def histogram(var, df, title, x_axis_title, y_axis_title, figsize=(8, 6)):
+def histogram(var, df, title, x_axis_title, y_axis_title, figsize=(5, 3)):
     last_generation = get_last_generation(df)
     last_generation_df = get_generation_df(df, last_generation)
 
