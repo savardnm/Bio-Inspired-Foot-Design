@@ -38,6 +38,10 @@ def compare_grippers(df):
             1.4657,
             0.5978,
             0.2391,
+            0.4523,
+            0.6106,
+            0.4484,
+            1.1780
         ]
     )
     finger_performance = 1e4 * np.array(
@@ -68,7 +72,7 @@ def compare_grippers(df):
     boxplot_manual(
         data=[prismatic_performance, revolute_performance, finger_performance, louse_performance],
         labels=["Prismatic", "Revolute", "Finger\nClaw", "Hook\nClaw"],
-        title="Overall Performance of Hook-Claw and Finger-Claw Grippers",
+        title="Overall Gripper Performance",
         x_axis_title="Gripper",
         y_axis_title="Performance $(N^2)$",
     )
@@ -116,6 +120,9 @@ def boxplot_results(
     bp = ax.boxplot(data, showfliers=False)
 
 
+    save_plot(title)
+
+
 def boxplot_manual(data, labels, title, x_axis_title, y_axis_title):
     fig = plt.figure(figsize=(6, 4))
     ax = fig.add_axes([0.15, 0.25, 0.75, 0.65], label="gripper")
@@ -128,8 +135,15 @@ def boxplot_manual(data, labels, title, x_axis_title, y_axis_title):
     # plt.xticks([], labels, rotation='vertical')
     bp = ax.boxplot(data, showfliers=False)
 
+    save_plot(title)
+
     
 
+
+def save_plot(title):
+    plots_dir = "/home/nathan/Documents/GitHub/Bio-Inspired-Foot-Design/results/plots/"
+
+    plt.savefig(plots_dir + title + ".png")
 
 def readable_labels(original_label_list):
     return [
