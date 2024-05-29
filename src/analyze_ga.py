@@ -13,7 +13,7 @@ from matplotlib.colors import LightSource
 
 def analyze(results_dir):
     results_df = pandas.read_csv(results_dir)
-    print("all results >>>>\n", results_df.to_string(), "\nall results <<<<")
+    # print("all results >>>>\n", results_df.to_string(), "\nall results <<<<")
 
     analyze_final_generation(results_df)
 
@@ -182,7 +182,7 @@ def compare_distributions(df):
     histogram(
         "scale",
         df,
-        title="Distribution of Curvature in Last Generation",
+        title="Distribution of Scale in Last Generation",
         x_axis_title="Curvature $(N/m)$",
         y_axis_title="Frequency (%)",
         figsize=(6, 4),
@@ -202,8 +202,11 @@ def histogram(var, df, title, x_axis_title, y_axis_title, figsize=(8, 6)):
     last_generation_df = get_generation_df(df, last_generation)
 
     var_df = last_generation_df[var]
+    mean = var_df.mean()
+    std = var_df.std()
 
-    print(title, "(", var_df.mean(), var_df.std(), ")")
+    print(title, "(", mean, std, ")")
+    
 
     fig = plt.figure(figsize=figsize)
     ax = fig.add_axes([0.1, 0.15, 0.8, 0.75])
@@ -212,6 +215,12 @@ def histogram(var, df, title, x_axis_title, y_axis_title, figsize=(8, 6)):
     plt.ylabel(y_axis_title)
 
     plt.hist(var_df, density=True)
+
+    plt.axvline(var_df.mean(), color='k', linestyle='dashed', linewidth=1)
+
+    min_ylim, max_ylim = plt.ylim()
+    plt.text(mean*1.1, max_ylim*0.9, 'Mean: {:.2f}'.format(var_df.mean()))
+
 
     save_plot(title)
 
