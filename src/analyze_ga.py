@@ -17,13 +17,6 @@ def analyze(results_dir):
 
     compare_generations(results_df)
 
-    histogram(
-        "pad_strength",
-        df,
-        title="Distribution of Pad Stiffness in Last Generation",
-        x_axis_title="Pad Stiffness $(N/m)$",
-        y_axis_title="Frequency (%)",
-    )
 
     plt.show()
 
@@ -61,6 +54,14 @@ def compare_generations(df):
         x_axis_title="Generation",
         y_axis_title="Pad Strength $(N/m)$",
         value_column="pad_strength",
+    )
+
+    histogram(
+        "pad_strength",
+        df,
+        title="Distribution of Pad Stiffness in Last Generation",
+        x_axis_title="Pad Stiffness $(N/m)$",
+        y_axis_title="Frequency (%)",
     )
 
 
@@ -225,6 +226,13 @@ def compare_horizontal(df):
         scene="05-Pole-PY",
     )
 
+
+def get_last_generation(df):
+    return df.iloc[-1]["generation"]
+
+
+def get_generation_df(df, generation):
+    return df[df["generation"].isin([generation])]
 
 
 def histogram(var, df, title, x_axis_title, y_axis_title, figsize=(8, 6)):
