@@ -13,13 +13,40 @@ from matplotlib.colors import LightSource
 
 def analyze(results_dir):
     results_df = pandas.read_csv(results_dir)
-    print("all results >>>>\n", results_df.to_string(), "\nall results <<<<")
+    # print("all results >>>>\n", results_df.to_string(), "\nall results <<<<")
 
-    compare_generations(results_df)
+    analyze_final_generation(results_df)
 
     compare_distributions(results_df)
+    compare_generations(results_df)
 
     plt.show()
+
+
+def analyze_final_generation(df):
+    histogram(
+        "result",
+        df,
+        title="Overall Performance of Final Generation",
+        x_axis_title="Overall Performance of Final Generation",
+        y_axis_title="Performance $(N^2)$",
+    )
+
+    histogram(
+        "horizontal_result",
+        df,
+        title="Normal Performance of Final Generation",
+        x_axis_title="Nromal Performance of Final Generation",
+        y_axis_title="Grip Strength $(N)$",
+    )
+
+    histogram(
+        "vertical_result",
+        df,
+        title="Shear Performance of Final Generation",
+        x_axis_title="Shear Performance of Final Generation",
+        y_axis_title="Grip Strength $(N)$",
+    )
 
 
 def compare_generations(df):
@@ -109,17 +136,115 @@ def compare_generations(df):
     )
 
 
+def save_plot(title):
+    plots_dir = "/home/nathan/Documents/GitHub/Bio-Inspired-Foot-Design/results/Plots/"
+
+    plt.savefig(plots_dir + title + ".png")
+
+
 def compare_distributions(df):
-    scatter("pad_strength", "num_pad_units", df,
-            title="Distribution of Pad Size vs Pad Strength in Last Generation",
-            x_axis_title="Pad Strength $(N/m)$",
-            y_axis_title="Pad Size (Number of Pad Units)",
-            condense=True)
+    scatter(
+        "pad_strength",
+        "num_pad_units",
+        df,
+        title="Distribution of Pad Size vs Pad Strength in Last Generation",
+        x_axis_title="Pad Strength $(N/m)$",
+        y_axis_title="Pad Size (Number of Pad Units)",
+        condense=True,
+    )
+
+    histogram(
+        "pad_strength",
+        df,
+        title="Distribution of Pad Stiffness in Last Generation",
+        x_axis_title="Pad Stiffness $(N/m)$",
+        y_axis_title="Frequency (%)",
+        figsize=(6, 4),
+    )
+
+    histogram(
+        "pad_starting_pos",
+        df,
+        title="Distribution of Pad Starting Position in Last Generation",
+        x_axis_title="Pad Stiffness $(N/m)$",
+        y_axis_title="Frequency (%)",
+        figsize=(6, 4),
+        draw_mean=False,
+        xticks={'ticks':[-1,0,1], 'labels':['bottom', 'center', 'top']}
+    )
+
+    histogram(
+        "num_pad_units",
+        df,
+        title="Distribution of Pad Size in Last Generation",
+        x_axis_title="Pad Size $(units)$",
+        y_axis_title="Frequency",
+        figsize=(6, 4),
+        draw_mean=False,
+    )
+
+    histogram(
+        "curvature",
+        df,
+        title="Distribution of Curvature in Last Generation",
+        x_axis_title="Curvature $(N/m)$",
+        y_axis_title="Frequency (%)",
+        figsize=(6, 4),
+    )
+
+    histogram(
+        "scale",
+        df,
+        title="Distribution of Scale in Last Generation",
+        x_axis_title="Curvature $(N/m)$",
+        y_axis_title="Frequency (%)",
+        figsize=(6, 4),
+    )
+
+
+def get_last_generation(df):
+    return df.iloc[-1]["generation"]
+
+
+def get_generation_df(df, generation):
+    return df[df["generation"].isin([generation])]
+
+
+def histogram(var, df, title, x_axis_title, y_axis_title, figsize=(8, 6), draw_mean=True, xticks = None):
+    last_generation = get_last_generation(df)
+    last_generation_df = get_generation_df(df, last_generation)
+
+    var_df = last_generation_df[var]
+    mean = var_df.mean()
+    std = var_df.std()
+
+    print(title, "(", mean, std, ")")
+    
+
+    fig = plt.figure(figsize=figsize)
+    ax = fig.add_axes([0.1, 0.15, 0.8, 0.75])
+    plt.title(title)
+    plt.xlabel(x_axis_title)
+    plt.ylabel(y_axis_title)
+
+    plt.hist(var_df, density=True)
+
+    if xticks:
+        plt.xticks(**xticks)
+
+    if draw_mean:
+        plt.axvline(var_df.mean(), color='k', linestyle='dashed', linewidth=1)
+
+        min_ylim, max_ylim = plt.ylim()
+        plt.text(mean*1.1, max_ylim*0.9, 'Mean: {:.2f}'.format(var_df.mean()))
+
+
+    save_plot(title)
 
 
 def scatter(x_axis, y_axis, df, title, x_axis_title, y_axis_title, condense=False):
-    last_generation = df.iloc[-1]["generation"]
-    last_generation_df = df[df["generation"].isin([last_generation])]
+    last_generation = get_last_generation(df)
+    last_generation_df = get_generation_df(df, last_generation)
     x_axis_data = last_generation_df[x_axis]
     y_axis_data = last_generation_df[y_axis]
 
@@ -140,17 +265,14 @@ def scatter(x_axis, y_axis, df, title, x_axis_title, y_axis_title, condense=Fals
             x_axis_data.append(name[0])
             y_axis_data.append(name[1])
             size_data.append(len(group.index) * 20.0)
-            print(f"Group: {name}")
-            print(group)
-            print()
 
         plt.scatter(x_axis_data, y_axis_data, s=size_data)
     else:
         plt.scatter(x_axis_data, y_axis_data)
 
+
 def get_unique_pairs(df, *axi):
     df.groupby(*axi)
-
 
 
 def multi_boxplot(
@@ -291,8 +413,7 @@ def boxplot(title, labels, data, x_axis_title="", y_axis_title=""):
 
     plots_dir = "/home/nathan/Documents/GitHub/Bio-Inspired-Foot-Design/results/Plots/"
 
-    plt.savefig(plots_dir + title + '.png')
-
+    plt.savefig(plots_dir + title + ".png")
 
 
 # def compare_scenes(df):
