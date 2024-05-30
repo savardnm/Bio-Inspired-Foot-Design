@@ -18,7 +18,7 @@ def analyze(results_dir):
     analyze_final_generation(results_df)
 
     compare_distributions(results_df)
-    # compare_generations(results_df)
+    compare_generations(results_df)
 
     plt.show()
 
@@ -159,6 +159,18 @@ def compare_distributions(df):
         title="Distribution of Pad Stiffness in Last Generation",
         x_axis_title="Pad Stiffness $(N/m)$",
         y_axis_title="Frequency (%)",
+        figsize=(6, 4),
+    )
+
+    histogram(
+        "pad_starting_pos",
+        df,
+        title="Distribution of Pad Starting Position in Last Generation",
+        x_axis_title="Pad Stiffness $(N/m)$",
+        y_axis_title="Frequency (%)",
+        figsize=(6, 4),
+        draw_mean=False,
+        xticks={'ticks':[-1,0,1], 'labels':['bottom', 'center', 'top']}
     )
 
     histogram(
@@ -168,6 +180,7 @@ def compare_distributions(df):
         x_axis_title="Pad Size $(units)$",
         y_axis_title="Frequency",
         figsize=(6, 4),
+        draw_mean=False,
     )
 
     histogram(
@@ -197,7 +210,7 @@ def get_generation_df(df, generation):
     return df[df["generation"].isin([generation])]
 
 
-def histogram(var, df, title, x_axis_title, y_axis_title, figsize=(8, 6)):
+def histogram(var, df, title, x_axis_title, y_axis_title, figsize=(8, 6), draw_mean=True, xticks = None):
     last_generation = get_last_generation(df)
     last_generation_df = get_generation_df(df, last_generation)
 
@@ -216,10 +229,14 @@ def histogram(var, df, title, x_axis_title, y_axis_title, figsize=(8, 6)):
 
     plt.hist(var_df, density=True)
 
-    plt.axvline(var_df.mean(), color='k', linestyle='dashed', linewidth=1)
+    if xticks:
+        plt.xticks(**xticks)
 
-    min_ylim, max_ylim = plt.ylim()
-    plt.text(mean*1.1, max_ylim*0.9, 'Mean: {:.2f}'.format(var_df.mean()))
+    if draw_mean:
+        plt.axvline(var_df.mean(), color='k', linestyle='dashed', linewidth=1)
+
+        min_ylim, max_ylim = plt.ylim()
+        plt.text(mean*1.1, max_ylim*0.9, 'Mean: {:.2f}'.format(var_df.mean()))
 
 
     save_plot(title)
