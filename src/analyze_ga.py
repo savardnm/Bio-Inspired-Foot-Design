@@ -55,6 +55,13 @@ def compare_generations(df):
         y_axis_title="Pad Strength $(N/m)$",
         value_column="pad_strength",
     )
+    histogram(
+        "result",
+        df,
+        title="Overall Performance of Final Generation",
+        x_axis_title="Overall Performance of Final Generation",
+        y_axis_title="Performance $(N^2)$",
+    )
 
     histogram(
         "pad_strength",
