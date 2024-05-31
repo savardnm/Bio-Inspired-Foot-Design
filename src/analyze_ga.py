@@ -551,5 +551,5 @@ def match_values(df, **criteria):
 
 
 if __name__ == "__main__":
-    results_dir = "/home/nathan/Documents/GitHub/Bio-Inspired-Foot-Design/results/csv/ga_results_100x100.csv"
+    results_dir = "/home/nathan/Documents/GitHub/Bio-Inspired-Foot-Design/results/csv/ga_results_redo_05:20:2024:21:33:01.csv"
     analyze(results_dir)
