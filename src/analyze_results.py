@@ -21,6 +21,7 @@ def analyze(results_dir):
     compare_louse_flex_effect(results_df)
     compare_louse_pad_size_effect(results_df)
     compare_scenes(results_df)
+    get_original_generation(results_df)
 
     plt.show()
 
@@ -138,6 +139,44 @@ def compare_finger_flex_effect(df):
         y_axis_title="Grip Force (N)",
     )
 
+def get_original_generation(df):
+    criteria = {
+        "gripper": "Louse-Pad-Script",
+        "scene": "05-Pole-PY",
+    }
+    louse_df = filter_df(df, **criteria)
+
+    for pad_strength in louse_df["pad_strength"].unique():
+        pad_criteria = {
+            'pad_strength': pad_strength
+        }
+
+        print("\nPS", pad_strength, "==============")
+        pad_df = filter_df(louse_df, **pad_criteria)
+
+        normal_criteria = {
+            "applied_force": "HorizontalForce",
+        }
+        normal_df = filter_df(pad_df, **normal_criteria)
+
+        shear_criteria = {
+            "applied_force": "VerticalForce",
+        }
+        shear_df = filter_df(pad_df, **shear_criteria)
+
+        normal_results = normal_df['result']
+        shear_results = shear_df['result']
+
+        normal_mean = normal_results.mean()
+        shear_mean = shear_results.mean()
+        overall_mean = normal_mean * shear_mean
+        
+        print("original Gripper Performance:\n",
+            "\nNormal Performance:\t", normal_mean,
+            "\nShear Perforamnce:\t", shear_mean,
+            "\nOverall_Performance:\t", overall_mean)
+
+
 def compare_louse_3d(df):
     criteria = {
         "gripper": "Louse-Pad-Script",
@@ -146,7 +185,7 @@ def compare_louse_3d(df):
     }
     louse_df = filter_df(df, **criteria)
 
-    pprint(louse_df)
+    # pprint(louse_df)
 
     num_pad_values = list(map(int, louse_df["num_pad_units"].unique()))
     pad_str_values = list(map(int, louse_df["pad_strength"].unique()))
